@@ -63,11 +63,39 @@ const Mission: React.FC = () => {
         </div>
         <div className="flex-1">
           <h2 className="text-3xl font-bold mb-6 text-hopely-pink">Join in our mission</h2>
-          <ul className="list-disc ml-6 mb-6 space-y-3 text-lg">
-            <li>Donate directly, whether regular or one-off</li>
-            <li>Volunteer your time or skills</li>
-            <li>Help us reach more children in need</li>
-            <li>Share our mission with your network</li>
+          <ul className="mb-6 space-y-4 text-lg">
+            <li className="flex items-center gap-4">
+              <img 
+                src="/src/assets/icons/charity.png" 
+                alt="Charity" 
+                className="w-8 h-8 flex-shrink-0"
+              />
+              <span>Donate directly, whether regular or one-off</span>
+            </li>
+            <li className="flex items-center gap-4">
+              <img 
+                src="/src/assets/icons/volunteer.png" 
+                alt="Volunteer" 
+                className="w-8 h-8 flex-shrink-0"
+              />
+              <span>Volunteer your time or skills</span>
+            </li>
+            <li className="flex items-center gap-4">
+              <img 
+                src="/src/assets/icons/gift.png" 
+                alt="Gift" 
+                className="w-8 h-8 flex-shrink-0"
+              />
+              <span>Help us reach more children in need</span>
+            </li>
+            <li className="flex items-center gap-4">
+              <img 
+                src="/src/assets/icons/charity.png" 
+                alt="Share" 
+                className="w-8 h-8 flex-shrink-0"
+              />
+              <span>Share our mission with your network</span>
+            </li>
           </ul>
           <button className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg">
             Join Us
