@@ -32,7 +32,7 @@ const Team: React.FC = () => {
                 className="w-36 h-36 object-cover rounded-full mb-6 shadow-md" 
               />
               <div className="font-bold text-xl mb-2 text-slate-800">{member.name}</div>
-              <div className="text-pink-500 text-sm font-semibold mb-4 tracking-wider">{member.role}</div>
+              <div className="text-hopely-pink text-sm font-semibold mb-4 tracking-wider">{member.role}</div>
               <p className="text-gray-700 text-sm leading-relaxed text-center">{member.description}</p>
             </div>
           ))}

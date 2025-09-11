@@ -25,10 +25,10 @@ const Button3D: React.FC<Button3DProps> = ({
   // Color configurations
   const variants = {
     pink: {
-      bg: 'bg-pink-500',
-      shadow: '[box-shadow:0_6px_0_0_#ec4899,0_8px_0_0_#ec489941]',
-      activeShadow: 'active:[box-shadow:0_0px_0_0_#ec4899,0_0px_0_0_#ec489941]',
-      border: 'border-pink-400'
+      bg: 'bg-hopely-pink',
+      shadow: '[box-shadow:0_6px_0_0_#D67B7A,0_8px_0_0_#D67B7A41]',
+      activeShadow: 'active:[box-shadow:0_0px_0_0_#D67B7A,0_0px_0_0_#D67B7A41]',
+      border: 'border-hopely-pink-dark'
     },
     blue: {
       bg: 'bg-blue-500',

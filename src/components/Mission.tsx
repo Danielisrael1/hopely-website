@@ -12,14 +12,14 @@ const Mission: React.FC = () => {
           />
         </div>
         <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-6 text-pink-400">Join in our mission</h2>
+          <h2 className="text-3xl font-bold mb-6 text-hopely-pink">Join in our mission</h2>
           <ul className="list-disc ml-6 mb-6 space-y-3 text-lg">
             <li>Donate directly, whether regular or one-off</li>
             <li>Volunteer your time or skills</li>
             <li>Help us reach more children in need</li>
             <li>Share our mission with your network</li>
           </ul>
-          <button className="bg-pink-500 text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-pink-600 hover:scale-105 transition-all duration-300 shadow-lg">
+          <button className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg">
             Join Us
           </button>
         </div>

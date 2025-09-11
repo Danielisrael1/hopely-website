@@ -11,22 +11,22 @@ const Contact: React.FC = () => {
               <input 
                 type="text" 
                 placeholder="Name" 
-                className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all" 
+                className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-hopely-pink focus:border-transparent transition-all" 
               />
               <input 
                 type="email" 
                 placeholder="Email" 
-                className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all" 
+                className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-hopely-pink focus:border-transparent transition-all" 
               />
             </div>
             <textarea 
               placeholder="Type your message here..." 
-              className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all" 
+              className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-hopely-pink focus:border-transparent transition-all" 
               rows={5}
             ></textarea>
             <button 
               type="submit" 
-              className="bg-pink-500 text-white px-8 py-3 rounded-lg font-bold hover:bg-pink-600 hover:scale-105 transition-all duration-300 shadow-lg"
+              className="bg-hopely-pink text-white px-8 py-3 rounded-lg font-bold hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg"
             >
               Send Message
             </button>

@@ -19,7 +19,7 @@ const SponsorChild: React.FC = () => {
               </p>
               <a 
                 href="#" 
-                className="inline-block bg-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-pink-600 transition-colors"
+                className="inline-block bg-hopely-pink text-white px-6 py-2 rounded-lg font-semibold hover:bg-hopely-pink-dark transition-colors"
               >
                 Sponsor Now
               </a>

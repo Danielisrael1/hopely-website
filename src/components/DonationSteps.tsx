@@ -23,7 +23,7 @@ const DonationSteps: React.FC = () => {
         <div className="space-y-8">
           {steps.map((step) => (
             <div key={step.number} className="flex gap-6 items-start group">
-              <span className="font-bold text-pink-400 text-xl bg-pink-400/20 px-3 py-2 rounded-full group-hover:bg-pink-400/30 transition-colors">
+              <span className="font-bold text-hopely-pink text-xl bg-hopely-pink/20 px-3 py-2 rounded-full group-hover:bg-hopely-pink/30 transition-colors">
                 Step {step.number}
               </span>
               <p className="text-lg leading-relaxed">{step.description}</p>

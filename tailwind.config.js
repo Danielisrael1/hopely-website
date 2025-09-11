@@ -10,6 +10,10 @@ export default {
         'sans': ['Montserrat', 'sans-serif'],
         'cursive': ['Dancing Script', 'cursive'],
       },
+      colors: {
+        'hopely-pink': '#EB9594',
+        'hopely-pink-dark': '#D67B7A',
+      },
     },
   },
   plugins: [],

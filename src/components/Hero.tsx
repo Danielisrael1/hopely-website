@@ -29,7 +29,7 @@ const Hero: React.FC = () => {
         <h1 className="text-5xl md:text-7xl font-cursive font-bold text-white drop-shadow-2xl mb-6 animate-fade-in">
           Hopely.org
         </h1>
-        <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
+        <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
           Empowering communities, transforming lives, creating hope for children in Uganda
         </p>
         <Button3D text="DONATE " size="large" variant="pink" className="px-24 text-lg shadow-xl" />

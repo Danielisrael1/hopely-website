@@ -23,14 +23,14 @@ const NoMoreSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((item, index) => (
             <div key={index} className="group hover:scale-105 transition-transform duration-300">
-              <div className="text-4xl font-extrabold text-pink-600 mb-3 group-hover:text-pink-700 transition-colors">
+              <div className="text-4xl font-extrabold text-hopely-pink mb-3 group-hover:text-hopely-pink-dark transition-colors">
                 No more
               </div>
               <div className="font-bold mb-4 text-xl text-slate-800">{item.category}</div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">{item.description}</p>
               <a 
                 href="#" 
-                className="inline-block text-pink-500 font-semibold hover:text-pink-600 hover:underline transition-colors"
+                className="inline-block text-hopely-pink font-semibold hover:text-hopely-pink-dark hover:underline transition-colors"
               >
                 Donate
               </a>
