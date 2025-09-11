@@ -90,7 +90,7 @@ const Mission: React.FC = () => {
             </li>
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/charity.png" 
+                src="/src/assets/icons/send.png" 
                 alt="Share" 
                 className="w-8 h-8 flex-shrink-0"
               />
