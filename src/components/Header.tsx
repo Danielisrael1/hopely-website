@@ -36,8 +36,8 @@ const Header: React.FC = () => {
       }`}>
         <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto">
           {/* Logo */}
-          <div className="font-extrabold text-lg sm:text-xl text-white z-50">
-            HOPELY
+          <div className="font-cursive font-bold text-xl sm:text-2xl text-white z-50">
+            Hopely.org
           </div>
 
           {/* Desktop Navigation */}
