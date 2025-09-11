@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Button3D from './Button3D';
 
 const Hero: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -31,9 +32,7 @@ const Hero: React.FC = () => {
         <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
           Empowering communities, transforming lives, creating hope for children in Uganda
         </p>
-        <button className="bg-pink-500 text-white px-8 py-3 rounded-full font-bold text-lg shadow-xl hover:bg-pink-600 hover:scale-105 transition-all duration-300">
-          DONATE NOW
-        </button>
+        <Button3D text="DONATE " size="large" variant="pink" className="px-24 text-lg shadow-xl" />
       </div>
       
       {/* Scroll Indicator */}

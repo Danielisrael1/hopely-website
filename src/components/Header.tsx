@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Button3D from './Button3D';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,28 +32,26 @@ const Header: React.FC = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-white/90 backdrop-blur-sm shadow-sm'
+        isScrolled ? 'bg-slate-800/95 backdrop-blur-md shadow-lg' : 'bg-transparent backdrop-blur-xs shadow-sm'
       }`}>
         <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto">
           {/* Logo */}
-          <div className="font-extrabold text-lg sm:text-xl text-slate-800 z-50">
-            HOPELY.org
+          <div className="font-extrabold text-lg sm:text-xl text-white z-50">
+            HOPELY
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-            <a href="#" className="text-slate-700 font-medium hover:text-pink-500 transition-colors duration-200">
+            <a href="#" className="text-white text-sm font-medium hover:text-pink-500 transition-colors duration-200">
               What We Do
             </a>
-            <a href="#" className="text-slate-700 font-medium hover:text-pink-500 transition-colors duration-200">
+            <a href="#" className="text-white text-sm font-medium hover:text-pink-500 transition-colors duration-200">
               Get Involved
             </a>
-            <a href="#" className="text-slate-700 font-medium hover:text-pink-500 transition-colors duration-200">
+            <a href="#" className="text-white text-sm font-medium hover:text-pink-500 transition-colors duration-200">
               Projects
             </a>
-            <a href="#" className="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 hover:scale-105 transition-all duration-200 font-medium">
-              Donate
-            </a>
+            <Button3D text="Donate" size="medium" variant="pink" />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -117,13 +116,13 @@ const Header: React.FC = () => {
               >
                 Projects
               </a>
-              <a 
-                href="#" 
+              <Button3D 
+                text="Donate Now" 
+                size="large" 
+                variant="pink" 
                 onClick={closeMenu}
-                className="bg-pink-500 text-white font-medium text-lg py-4 px-6 rounded-xl hover:bg-pink-600 transition-colors duration-200 text-center mt-4"
-              >
-                Donate Now
-              </a>
+                className="w-full mt-4"
+              />
             </nav>
 
             {/* Contact Info */}
