@@ -2,6 +2,7 @@ import './App.css';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Mission from './components/Mission';
+import NGOSection from './components/NGOSection';
 import InfoCards from './components/InfoCards';
 import NoMoreSection from './components/NoMoreSection';
 import OutreachBanner from './components/OutreachBanner';
@@ -18,6 +19,7 @@ function App() {
       <Header />
       <Hero />
       <Mission />
+      <NGOSection />
       <InfoCards />
       <NoMoreSection />
       <OutreachBanner />
