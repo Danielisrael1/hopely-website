@@ -19,7 +19,7 @@ const NoMoreSection: React.FC = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-16 text-center">
-        <h2 className="text-3xl font-cursive font-bold mb-12 text-slate-800">Hopely.org</h2>
+        <h2 className="text-3xl font-cursive font-bold mb-12 text-slate-800">Hopely Uganda</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((item, index) => (
             <div key={index} className="group hover:scale-105 transition-transform duration-100">
