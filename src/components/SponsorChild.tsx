@@ -20,11 +20,11 @@ const SponsorChild: React.FC = () => {
     },
     {
       id: 3,
-      name: "Mukisa David",
+      name: "Ssaku Parvin Darious |S4",
       age: 14,
       image: "/src/assets/img/pervin.jpg",
-      description: "David is passionate about technology and computers. He comes from a family struggling to make ends meet.",
-      additionalInfo: "With your support, David can access better educational resources and technology training that will help him build a successful future."
+      description: "Parvin ,17 years at his young age, he couldn’t make it to school and was stuckUsed to vendor clothes to earn a living with his mother. Open not lost. He continued in this line of business, but it couldn’t generate enough income to take him to school.With your generous sponsorship, Parvin can go back to school so that he achieves his goals and dreams in lif.",
+      additionalInfo: "Become a sponsor parent to Parvin."
     }
   ];
 
