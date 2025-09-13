@@ -66,7 +66,7 @@ const Mission: React.FC = () => {
           <ul className="mb-6 space-y-4 text-lg">
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/charity.png" 
+                src="/src/assets/icons/gift.png" 
                 alt="Charity" 
                 className="w-8 h-8 flex-shrink-0"
               />
@@ -82,7 +82,7 @@ const Mission: React.FC = () => {
             </li>
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/gift.png" 
+                src="/src/assets/icons/infocards/heart.png" 
                 alt="Gift" 
                 className="w-8 h-8 flex-shrink-0"
               />
