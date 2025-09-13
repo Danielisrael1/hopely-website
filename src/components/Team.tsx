@@ -19,7 +19,7 @@ const Team: React.FC = () => {
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 md:px-16 text-center">
-        <h2 className="text-3xl font-bold mb-12 text-slate-800">Meet our awesome team</h2>
+        <h2 className="text-3xl font-bold mb-12 text-slate-800 font-heading">Meet our awesome team</h2>
         <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
           {teamMembers.map((member, index) => (
             <div 

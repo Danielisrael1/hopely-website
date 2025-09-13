@@ -4,7 +4,7 @@ const SponsorChild: React.FC = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 md:px-16 text-center">
-        <h2 className="text-3xl font-bold mb-12 text-slate-800">Sponsor a child</h2>
+        <h2 className="text-3xl font-bold mb-12 text-slate-800 font-heading">Sponsor a child</h2>
         <div className="max-w-2xl mx-auto bg-gray-50 rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <img 

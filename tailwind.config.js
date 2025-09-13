@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         'sans': ['Montserrat', 'sans-serif'],
         'cursive': ['Dancing Script', 'cursive'],
+        'heading': ['Russo One', 'sans-serif'],
       },
       colors: {
         'hopely-pink': '#EB9594',

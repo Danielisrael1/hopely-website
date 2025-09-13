@@ -19,7 +19,7 @@ const DonationSteps: React.FC = () => {
   return (
     <section className="py-16 bg-slate-800 text-white">
       <div className="max-w-6xl mx-auto px-4 md:px-16">
-        <h2 className="text-3xl font-bold mb-16 text-center">How we spend your donation</h2>
+        <h2 className="text-3xl font-bold mb-16 text-center font-heading">How we spend your donation</h2>
         
         <div className="relative max-w-4xl mx-auto">
           {/* Timeline line */}

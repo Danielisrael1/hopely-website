@@ -62,7 +62,7 @@ const Mission: React.FC = () => {
           </div>
         </div>
         <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-6 text-hopely-pink">Join in our mission</h2>
+          <h2 className="text-3xl font-bold mb-6 text-hopely-pink font-heading">Join in our mission</h2>
           <ul className="mb-6 space-y-4 text-lg">
             <li className="flex items-center gap-4">
               <img 

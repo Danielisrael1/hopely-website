@@ -55,7 +55,7 @@ const InfoCards: React.FC = () => {
                 
                 {/* Text Content */}
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-3 drop-shadow-lg">
+                  <h3 className="text-2xl font-bold mb-3 drop-shadow-lg font-heading">
                     {card.title}
                   </h3>
                   <p className="text-white/90 leading-relaxed drop-shadow-md">

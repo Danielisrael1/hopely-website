@@ -7,7 +7,7 @@ const NGOSection: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Title Section */}
           <div className="lg:w-1/3">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 leading-tight font-heading">
               Non-Governmental
               <br />
               <span className="text-hopely-pink">Organization</span>
