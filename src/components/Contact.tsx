@@ -4,8 +4,8 @@ const Contact: React.FC = () => {
   return (
     <section className="py-16 bg-gradient-to-b from-pink-50 to-white">
       <div className="max-w-4xl mx-auto px-4 md:px-16">
-        <h2 className="text-3xl font-bold mb-12 text-center text-slate-800">Contact us</h2>
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-3xl font-bold font-heading mb-12 text-center text-slate-800">Contact us</h2>
+        <div className="bg-white rounded-xl p-2">
           <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <input 
