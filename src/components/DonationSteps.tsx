@@ -19,7 +19,10 @@ const DonationSteps: React.FC = () => {
   return (
     <section className="py-16 bg-slate-800 text-white">
       <div className="max-w-6xl mx-auto px-4 md:px-16">
-        <h2 className="text-3xl font-bold mb-16 text-center font-heading">How we spend your donation</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center font-heading">How we spend your donation</h2>
+        <p className="text-lg text-white/80 text-center mb-16 max-w-4xl mx-auto leading-relaxed">
+          When it comes to spending your money we ensure to keep transparency on where a single penny goes and weekly report on the completed projects.
+        </p>
         
         <div className="relative max-w-4xl mx-auto">
           {/* Timeline line */}

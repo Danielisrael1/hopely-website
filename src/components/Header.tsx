@@ -57,17 +57,17 @@ const Header: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 z-50"
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 focus:bg-white/10 active:bg-white-100 transition-colors duration-200 z-50"
             aria-label="Toggle menu"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <div className={`w-5 h-0.5 bg-slate-800 transition-all duration-300 ${
+              <div className={`w-5 h-0.5 bg-white transition-all duration-300 ${
                 isMenuOpen ? 'rotate-45 translate-y-1.5' : 'mb-1'
               }`} />
-              <div className={`w-5 h-0.5 bg-slate-800 transition-all duration-300 ${
+              <div className={`w-5 h-0.5 bg-white transition-all duration-300 ${
                 isMenuOpen ? 'opacity-0' : 'mb-1'
               }`} />
-              <div className={`w-5 h-0.5 bg-slate-800 transition-all duration-300 ${
+              <div className={`w-5 h-0.5 bg-white transition-all duration-300 ${
                 isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
               }`} />
             </div>

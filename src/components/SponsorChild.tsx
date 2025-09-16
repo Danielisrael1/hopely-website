@@ -62,7 +62,7 @@ const SponsorChild: React.FC = () => {
         <h2 className="text-3xl font-bold mb-12 text-slate-800 font-heading">Sponsor a child</h2>
         
         <div 
-          className="relative max-w-4xl mx-auto bg-gray-50 rounded-xl shadow-lg overflow-hidden"
+          className="relative max-w-4xl mx-auto bg-gray-50 rounded-xl overflow-hidden"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
@@ -121,12 +121,6 @@ const SponsorChild: React.FC = () => {
                       <div className="flex gap-4">
                         <button className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold hover:bg-hopely-pink-dark transition-colors shadow-lg">
                           Sponsor Now
-                        </button>
-                        <button className="text-hopely-pink font-semibold hover:text-hopely-pink-dark transition-colors flex items-center gap-2">
-                          Learn more
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
                         </button>
                       </div>
                     </div>
