@@ -5,6 +5,18 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Smooth scroll function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+    setIsMenuOpen(false); // Close mobile menu if open
+  };
+
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -42,15 +54,24 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-            <a href="#" className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200">
+            <button 
+              onClick={() => scrollToSection('what-we-do')}
+              className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
+            >
               What We Do
-            </a>
-            <a href="#" className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200">
+            </button>
+            <button 
+              onClick={() => scrollToSection('get-involved')}
+              className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
+            >
               Get Involved
-            </a>
-            <a href="#" className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200">
+            </button>
+            <button 
+              onClick={() => scrollToSection('projects')}
+              className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
+            >
               Projects
-            </a>
+            </button>
             <Button3D text="Donate" size="medium" variant="pink" href="https://gofund.me/266a82aa" />
           </nav>
 
@@ -95,27 +116,33 @@ const Header: React.FC = () => {
           <div className="flex flex-col h-full pt-20 pb-6 px-6">
             {/* Navigation Links */}
             <nav className="flex flex-col space-y-6">
-              <a 
-                href="#" 
-                onClick={closeMenu}
-                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200"
+              <button 
+                onClick={() => {
+                  scrollToSection('what-we-do');
+                  closeMenu();
+                }}
+                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
               >
                 What We Do
-              </a>
-              <a 
-                href="#" 
-                onClick={closeMenu}
-                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200"
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('get-involved');
+                  closeMenu();
+                }}
+                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
               >
                 Get Involved
-              </a>
-              <a 
-                href="#" 
-                onClick={closeMenu}
-                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200"
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('projects');
+                  closeMenu();
+                }}
+                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
               >
                 Projects
-              </a>
+              </button>
               <Button3D 
                 text="Donate Now" 
                 size="large" 

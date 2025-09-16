@@ -18,16 +18,22 @@ function App() {
     <div className="font-sans">
       <Header />
       <Hero />
-      <Mission />
-      <NGOSection />
-      <InfoCards />
-      <NoMoreSection />
+      <section id="what-we-do">
+        <Mission />
+        <NGOSection />
+        <InfoCards />
+        <NoMoreSection />
+      </section>
       <OutreachBanner />
-      <DonationSteps />
-      <SponsorChild />
+      <section id="projects">
+        <DonationSteps />
+        <SponsorChild />
+      </section>
       <QuoteBanner />
-      <Team />
-      <Contact />
+      <section id="get-involved">
+        <Team />
+        <Contact />
+      </section>
       <Footer />
     </div>
   );
