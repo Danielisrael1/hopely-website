@@ -24,7 +24,7 @@ const Team: React.FC = () => {
           {teamMembers.map((member, index) => (
             <div 
               key={index}
-              className="bg-white rounded-xl shadow-lg p-8 w-80 flex flex-col items-center hover:shadow-xl hover:scale-105 transition-all duration-300"
+              className="bg-white rounded-xl border p-8 w-80 flex flex-col items-center hover:shadow-lg hover:scale-105 transition-all duration-300"
             >
               <img 
                 src={member.image} 
