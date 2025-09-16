@@ -15,7 +15,7 @@ const Mission: React.FC = () => {
                     width="100%" 
                     height="100%" 
                     preserveAspectRatio="xMidYMid slice" 
-                    href="/src/assets/img/hope.jpg" 
+                    href="/img/hope.jpg" 
                   />
                 </pattern>
               </defs>
@@ -66,7 +66,7 @@ const Mission: React.FC = () => {
           <ul className="mb-6 space-y-4 text-lg">
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/gift.png" 
+                src="/icons/gift.png" 
                 alt="Charity" 
                 className="w-8 h-8 flex-shrink-0"
               />
@@ -74,7 +74,7 @@ const Mission: React.FC = () => {
             </li>
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/volunteer.png" 
+                src="/icons/volunteer.png" 
                 alt="Volunteer" 
                 className="w-8 h-8 flex-shrink-0"
               />
@@ -82,7 +82,7 @@ const Mission: React.FC = () => {
             </li>
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/infocards/heart.png" 
+                src="/icons/infocards/heart.png" 
                 alt="Gift" 
                 className="w-8 h-8 flex-shrink-0"
               />
@@ -90,7 +90,7 @@ const Mission: React.FC = () => {
             </li>
             <li className="flex items-center gap-4">
               <img 
-                src="/src/assets/icons/send.png" 
+                src="/icons/send.png" 
                 alt="Share" 
                 className="w-8 h-8 flex-shrink-0"
               />

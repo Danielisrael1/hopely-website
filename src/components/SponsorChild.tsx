@@ -6,7 +6,7 @@ const SponsorChild: React.FC = () => {
       id: 1,
       name: "Kimuli Joseph",
       age: 16,
-      image: "/src/assets/img/jose.jpg",
+      image: "/img/jose.jpg",
       description: "Joseph, 16 years is the eldest among his 3 siblings. abandon by the father he had challenges going to school since it was his mother carrying the family alone taking care.",
       additionalInfo: "with your sponsorship, he can go to a better school, acquire better education and break the poverty cycle in the family hence, brighter future Become a sponsor parent to Joseph."
     },
@@ -14,7 +14,7 @@ const SponsorChild: React.FC = () => {
       id: 2,
       name: "Nakato Sarah",
       age: 12,
-      image: "/src/assets/img/alisha.jpg",
+      image: "/img/alisha.jpg",
       description: "Sarah is a bright young girl who dreams of becoming a doctor. She lost her parents in an accident and now lives with her grandmother.",
       additionalInfo: "Your sponsorship will help Sarah continue her education and provide her with the basic necessities she needs to thrive and achieve her dreams."
     },
@@ -22,7 +22,7 @@ const SponsorChild: React.FC = () => {
       id: 3,
       name: "Ssaku Parvin Darious |S4",
       age: 14,
-      image: "/src/assets/img/pervin.jpg",
+      image: "/img/pervin.jpg",
       description: "Parvin ,17 years at his young age, he couldn’t make it to school and was stuckUsed to vendor clothes to earn a living with his mother. Open not lost. He continued in this line of business, but it couldn’t generate enough income to take him to school.With your generous sponsorship, Parvin can go back to school so that he achieves his goals and dreams in lif.",
       additionalInfo: "Become a sponsor parent to Parvin."
     }

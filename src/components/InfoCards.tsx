@@ -5,20 +5,20 @@ const InfoCards: React.FC = () => {
     {
       title: "Your Donation",
       description: "We are hoping to have people across the world to help us in our mission to make children have a better future.",
-      backgroundImage: "/src/assets/img/coin-donation.jpg",
-      iconImage: "/src/assets/icons/infocards/heart.png"
+      backgroundImage: "/img/coin-donation.jpg",
+      iconImage: "/icons/infocards/heart.png"
     },
     {
       title: "Complete Projects",
       description: "We provide updates on completed and ongoing projects, ensuring transparency and impact in our community work.",
-      backgroundImage: "/src/assets/img/IMG_4178.png",
-      iconImage: "/src/assets/icons/infocards/project.png"
+      backgroundImage: "/img/IMG_4178.png",
+      iconImage: "/icons/infocards/project.png"
     },
     {
       title: "Hopekid",
       description: "We also have a sponsorship programme where you can sponsor a child and help them get access to education and basic needs.",
-      backgroundImage: "/src/assets/img/IMG_4149.png",
-      iconImage: "/src/assets/icons/infocards/baby.png"
+      backgroundImage: "/img/IMG_4149.png",
+      iconImage: "/icons/infocards/baby.png"
     }
   ];
 

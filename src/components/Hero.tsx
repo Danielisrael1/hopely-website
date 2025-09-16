@@ -16,7 +16,7 @@ const Hero: React.FC = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-fixed"
         style={{
-          backgroundImage: "url('/src/assets/img/IMG_4149.png')",
+          backgroundImage: "url('/img/IMG_4149.png')",
           transform: `translateY(${scrollY * 0.5}px)`
         }}
       />

@@ -6,7 +6,7 @@ const Team: React.FC = () => {
       id: 1,
       name: "Felicity Byaruhanga",
       role: "FOUNDER",
-      image: "/src/assets/img/pervin.jpg",
+      image: "/img/pervin.jpg",
       description: "Felicity is passionate about empowering communities and has led Hopely.org since its inception.",
       email: "felicity@hopely.org"
     },
@@ -14,7 +14,7 @@ const Team: React.FC = () => {
       id: 2,
       name: "Daniel Israel",
       role: "CO-FOUNDER",
-      image: "/src/assets/img/alisha.jpg",
+      image: "/img/alisha.jpg",
       description: "Daniel is dedicated to making a difference and manages outreach and partnerships.",
       email: "daniel@hopely.org"
     },
@@ -22,7 +22,7 @@ const Team: React.FC = () => {
       id: 3,
       name: "Sarah Nakato",
       role: "PROJECT MANAGER",
-      image: "/src/assets/img/hope.jpg",
+      image: "/img/hope.jpg",
       description: "Sarah coordinates our field operations and ensures projects are completed successfully.",
       email: "sarah@hopely.org"
     },
@@ -30,7 +30,7 @@ const Team: React.FC = () => {
       id: 4,
       name: "Moses Kiprotich",
       role: "COMMUNITY OUTREACH",
-      image: "/src/assets/img/jose.jpg",
+      image: "/img/jose.jpg",
       description: "Moses builds relationships with local communities and identifies children in need of support.",
       email: "moses@hopely.org"
     },
@@ -38,7 +38,7 @@ const Team: React.FC = () => {
       id: 5,
       name: "Grace Nalubega",
       role: "EDUCATION COORDINATOR",
-      image: "/src/assets/img/IMG_4149.png",
+      image: "/img/IMG_4149.png",
       description: "Grace oversees our educational programs and ensures children receive quality learning opportunities.",
       email: "grace@hopely.org"
     }
