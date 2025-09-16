@@ -3,6 +3,8 @@ import React from 'react';
 interface Button3DProps {
   text: string;
   onClick?: () => void;
+  href?: string;
+  target?: string;
   size?: 'small' | 'medium' | 'large';
   variant?: 'pink' | 'blue' | 'green';
   className?: string;
@@ -11,6 +13,8 @@ interface Button3DProps {
 const Button3D: React.FC<Button3DProps> = ({ 
   text, 
   onClick, 
+  href,
+  target = '_blank',
   size = 'medium', 
   variant = 'pink',
   className = ''
@@ -47,20 +51,39 @@ const Button3D: React.FC<Button3DProps> = ({
   const currentVariant = variants[variant];
   const currentSize = sizes[size];
 
+  const baseClasses = `${currentSize} ${currentVariant.bg} rounded-lg cursor-pointer select-none
+    active:translate-y-1 ${currentVariant.activeShadow}
+    active:border-b-[0px]
+    transition-all duration-150 ${currentVariant.shadow}
+    border-b-[1px] ${currentVariant.border}
+    ${className}
+  `;
+
+  const content = (
+    <span className="flex flex-col justify-center items-center h-full text-white font-bold">
+      {text}
+    </span>
+  );
+
+  if (href) {
+    return (
+      <a 
+        href={href}
+        target={target}
+        rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+        className={baseClasses}
+      >
+        {content}
+      </a>
+    );
+  }
+
   return (
     <div 
       onClick={onClick}
-      className={`${currentSize} ${currentVariant.bg} rounded-lg cursor-pointer select-none
-        active:translate-y-1 ${currentVariant.activeShadow}
-        active:border-b-[0px]
-        transition-all duration-150 ${currentVariant.shadow}
-        border-b-[1px] ${currentVariant.border}
-        ${className}
-      `}
+      className={baseClasses}
     >
-      <span className="flex flex-col justify-center items-center h-full text-white font-bold">
-        {text}
-      </span>
+      {content}
     </div>
   );
 };

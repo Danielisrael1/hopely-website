@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
             <a href="#" className="hover:text-hopely-pink transition-colors">What We Do</a>
             <a href="#" className="hover:text-hopely-pink transition-colors">Get Involved</a>
             <a href="#" className="hover:text-hopely-pink transition-colors">Projects</a>
-            <a href="#" className="hover:text-hopely-pink transition-colors">Donate</a>
+            <a href="https://gofund.me/266a82aa" target="_blank" rel="noopener noreferrer" className="hover:text-hopely-pink transition-colors">Donate</a>
           </div>
           
           <div className="flex space-x-4">

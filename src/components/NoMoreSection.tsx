@@ -28,12 +28,14 @@ const NoMoreSection: React.FC = () => {
               </div>
               <div className="font-bold mb-4 text-xl text-slate-800 font-heading">{item.category}</div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">{item.description}</p>
-              {/* <a 
-                href="#" 
+              <a 
+                href="https://gofund.me/266a82aa" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block text-hopely-pink font-semibold hover:text-hopely-pink-dark hover:underline transition-colors"
               >
                 Donate
-              </a> */}
+              </a>
             </div>
           ))}
         </div>

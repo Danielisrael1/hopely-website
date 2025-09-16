@@ -32,7 +32,7 @@ const Hero: React.FC = () => {
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
           Empowering communities, transforming lives, creating hope for children in Uganda
         </p>
-        <Button3D text="DONATE " size="large" variant="pink" className="px-24 text-lg shadow-xl" />
+        <Button3D text="DONATE " size="large" variant="pink" className="px-24 text-lg shadow-xl" href="https://gofund.me/266a82aa" />
       </div>
       
       {/* Scroll Indicator */}

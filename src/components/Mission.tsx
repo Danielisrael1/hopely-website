@@ -97,9 +97,14 @@ const Mission: React.FC = () => {
               <span>Share our mission with your network</span>
             </li>
           </ul>
-          <button className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg">
+          <a 
+            href="https://gofund.me/266a82aa" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg inline-block"
+          >
             Join Us
-          </button>
+          </a>
         </div>
       </div>
     </section>

@@ -51,7 +51,7 @@ const Header: React.FC = () => {
             <a href="#" className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200">
               Projects
             </a>
-            <Button3D text="Donate" size="medium" variant="pink" />
+            <Button3D text="Donate" size="medium" variant="pink" href="https://gofund.me/266a82aa" />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -120,7 +120,7 @@ const Header: React.FC = () => {
                 text="Donate Now" 
                 size="large" 
                 variant="pink" 
-                onClick={closeMenu}
+                href="https://gofund.me/266a82aa"
                 className="w-full mt-4"
               />
             </nav>

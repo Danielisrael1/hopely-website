@@ -119,9 +119,14 @@ const SponsorChild: React.FC = () => {
                       
                       {/* Learn More Button */}
                       <div className="flex gap-4">
-                        <button className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold hover:bg-hopely-pink-dark transition-colors shadow-lg">
+                        <a 
+                          href="https://gofund.me/266a82aa" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold hover:bg-hopely-pink-dark transition-colors shadow-lg inline-block"
+                        >
                           Sponsor Now
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
