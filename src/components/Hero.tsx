@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-4">
-        <h1 className="text-5xl md:text-7xl font-cursive font-bold text-white drop-shadow-2xl mb-6 animate-fade-in">
+        <h1 className="text-5xl md:text-7xl font-heading font-bold text-white drop-shadow-2xl mb-6 animate-fade-in">
           Hopely Uganda
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
