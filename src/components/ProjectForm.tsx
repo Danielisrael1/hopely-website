@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Project {
   id: string;
@@ -23,19 +23,51 @@ interface ProjectFormProps {
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ isOpen, onClose, onSave, project }) => {
   const [formData, setFormData] = useState({
-    title: project?.title || '',
-    description: project?.description || '',
-    image: project?.image || '',
-    status: project?.status || 'planning' as const,
-    location: project?.location || '',
-    beneficiaries: project?.beneficiaries || 0,
-    dateStarted: project?.dateStarted || '',
-    dateCompleted: project?.dateCompleted || '',
-    budget: project?.budget || 0,
-    raised: project?.raised || 0,
+    title: '',
+    description: '',
+    image: '',
+    status: 'planning' as 'ongoing' | 'completed' | 'planning',
+    location: '',
+    beneficiaries: 0,
+    dateStarted: '',
+    dateCompleted: '',
+    budget: 0,
+    raised: 0,
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Update form data when project prop changes
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        title: project.title,
+        description: project.description,
+        image: project.image,
+        status: project.status,
+        location: project.location,
+        beneficiaries: project.beneficiaries,
+        dateStarted: project.dateStarted,
+        dateCompleted: project.dateCompleted || '',
+        budget: project.budget,
+        raised: project.raised,
+      });
+    } else {
+      // Reset form for new project
+      setFormData({
+        title: '',
+        description: '',
+        image: '',
+        status: 'planning' as 'ongoing' | 'completed' | 'planning',
+        location: '',
+        beneficiaries: 0,
+        dateStarted: '',
+        dateCompleted: '',
+        budget: 0,
+        raised: 0,
+      });
+    }
+  }, [project]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
