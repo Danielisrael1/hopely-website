@@ -3,44 +3,49 @@ import React, { useState, useEffect, useRef } from 'react';
 const Team: React.FC = () => {
   const teamMembers = [
     {
-      id: 1,
-      name: "Felicity Byaruhanga",
-      role: "FOUNDER",
-      image: "/img/pervin.jpg",
-      description: "Felicity is passionate about empowering communities and has led Hopely.org since its inception.",
+      id: 3,
+      name: "Byaruhanga Felicity",
+      role: "TEAM LEAD CANADA",
+      location: "Canada",
+      image: "/img/teams/team3.jpg",
+      description: "Felicity leads our Canadian operations and coordinates international partnerships for Hopely.org.",
       email: "felicity@hopely.org"
     },
     {
-      id: 2,
-      name: "Daniel Israel",
-      role: "CO-FOUNDER",
-      image: "/img/alisha.jpg",
-      description: "Daniel is dedicated to making a difference and manages outreach and partnerships.",
+      id: 4,
+      name: "Lukwago Daniel",
+      role: "TEAM LEAD UGANDA",
+      location: "Uganda",
+      image: "/img/teams/team4.jpg",
+      description: "Daniel leads our Uganda team and manages community outreach and local partnerships on the ground.",
       email: "daniel@hopely.org"
     },
     {
-      id: 3,
-      name: "Sarah Nakato",
-      role: "PROJECT MANAGER",
-      image: "/img/hope.jpg",
-      description: "Sarah coordinates our field operations and ensures projects are completed successfully.",
-      email: "sarah@hopely.org"
-    },
-    {
-      id: 4,
-      name: "Moses Kiprotich",
-      role: "COMMUNITY OUTREACH",
-      image: "/img/jose.jpg",
-      description: "Moses builds relationships with local communities and identifies children in need of support.",
-      email: "moses@hopely.org"
-    },
-    {
       id: 5,
-      name: "Grace Nalubega",
-      role: "EDUCATION COORDINATOR",
-      image: "/img/IMG_4149.png",
-      description: "Grace oversees our educational programs and ensures children receive quality learning opportunities.",
-      email: "grace@hopely.org"
+      name: "Brooke Ramos Dickson",
+      role: "COMMUNICATIONS DIRECTOR",
+      location: "Canada",
+      image: "/img/teams/team5.jpg",
+      description: "Brooke manages our communications, storytelling, and digital outreach to spread awareness of our mission.",
+      email: "brooke@hopely.org"
+    },
+    {
+      id: 1,
+      name: "Jjunju Micheal",
+      role: "FIELD OPERATIONS DIRECTOR",
+      location: "Uganda",
+      image: "/img/teams/team1.jpg",
+      description: "Micheal oversees all field operations in Uganda, ensuring our programs reach the communities that need them most.",
+      email: "micheal@hopely.org"
+    },
+    {
+      id: 2,
+      name: "Kisakye Dorah",
+      role: "FINANCE DIRECTOR",
+      location: "Uganda",
+      image: "/img/teams/team2.jpg",
+      description: "Dorah manages our finances with transparency and ensures every donation is used effectively for maximum impact.",
+      email: "dorah@hopely.org"
     }
   ];
 
@@ -190,14 +195,27 @@ const Team: React.FC = () => {
                     <h3 className="font-bold text-lg md:text-xl mb-2 text-slate-800 font-heading text-center">
                       {member.name}
                     </h3>
-                    <div className="text-hopely-pink text-xs md:text-sm font-semibold mb-4 tracking-wider uppercase">
+                    <div className="text-hopely-pink text-xs md:text-sm font-semibold mb-2 tracking-wider uppercase">
                       {member.role}
+                    </div>
+                    <div className="text-gray-500 text-xs md:text-sm font-medium mb-4 flex items-center justify-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {member.location}
                     </div>
                     <p className="text-gray-700 text-sm md:text-base leading-relaxed text-center flex-grow mb-4">
                       {member.description}
                     </p>
                     
-                
+                    {/* Contact Button */}
+                    {/* <button className="text-hopely-pink hover:text-hopely-pink-dark font-semibold text-sm transition-colors flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Contact
+                    </button> */}
                   </div>
                 </div>
               ))}

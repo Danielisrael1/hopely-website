@@ -6,7 +6,6 @@ import NGOSection from './components/NGOSection';
 import InfoCards from './components/InfoCards';
 import NoMoreSection from './components/NoMoreSection';
 import OutreachBanner from './components/OutreachBanner';
-import DonationSteps from './components/DonationSteps';
 import SponsorChild from './components/SponsorChild';
 import QuoteBanner from './components/QuoteBanner';
 import Team from './components/Team';
@@ -26,7 +25,7 @@ function App() {
       </section>
       <OutreachBanner />
       <section id="projects">
-        <DonationSteps />
+        {/* <DonationSteps /> */}
         <SponsorChild />
       </section>
       <QuoteBanner />
