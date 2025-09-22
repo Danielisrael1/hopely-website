@@ -1,19 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button3D from './Button3D';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Smooth scroll function
+  // Smooth scroll function for sections on the home page
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+    // If we're not on the home page, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Use setTimeout to allow navigation to complete before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
     }
+    setIsMenuOpen(false); // Close mobile menu if open
+  };
+
+  // Navigate to projects page
+  const navigateToProjects = () => {
+    navigate('/projects');
     setIsMenuOpen(false); // Close mobile menu if open
   };
 
@@ -48,9 +72,12 @@ const Header: React.FC = () => {
       }`}>
         <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto">
           {/* Logo */}
-          <div className="font-cursive font-bold text-xl sm:text-2xl text-white z-50">
+          <button 
+            onClick={() => navigate('/')}
+            className="font-cursive font-bold text-xl sm:text-2xl text-white z-50 hover:text-hopely-pink transition-colors duration-200"
+          >
             Hopely Uganda
-          </div>
+          </button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
@@ -67,7 +94,7 @@ const Header: React.FC = () => {
               Get Involved
             </button>
             <button 
-              onClick={() => scrollToSection('projects')}
+              onClick={navigateToProjects}
               className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
             >
               Projects
@@ -136,7 +163,7 @@ const Header: React.FC = () => {
               </button>
               <button 
                 onClick={() => {
-                  scrollToSection('projects');
+                  navigateToProjects();
                   closeMenu();
                 }}
                 className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
