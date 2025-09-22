@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import Button3D from '../components/Button3D';
 import LoginModal from '../components/LoginModal';
 import ProjectForm from '../components/ProjectForm';
+import ProjectDetailsModal from '../components/ProjectDetailsModal';
 import { useAuth } from '../hooks/useAuth';
 import { projectService, type Project } from '../services/projectService';
 
@@ -12,6 +13,8 @@ const Projects: React.FC = () => {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [showProjectDetails, setShowProjectDetails] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
   const { isAuthenticated, logout } = useAuth();
 
@@ -104,6 +107,11 @@ const Projects: React.FC = () => {
         alert('Error deleting project. Please try again.');
       }
     }
+  };
+
+  const handleLearnMore = (project: Project) => {
+    setSelectedProject(project);
+    setShowProjectDetails(true);
   };
 
   const filteredProjects = filter === 'all' 
@@ -256,6 +264,7 @@ const Projects: React.FC = () => {
                         size="medium" 
                         variant="pink" 
                         className="w-full"
+                        onClick={() => handleLearnMore(project)}
                       />
                       
                       {/* Admin Controls */}
@@ -304,6 +313,15 @@ const Projects: React.FC = () => {
           }}
           onSave={handleSaveProject}
           project={editingProject}
+        />
+
+        <ProjectDetailsModal
+          isOpen={showProjectDetails}
+          onClose={() => {
+            setShowProjectDetails(false);
+            setSelectedProject(null);
+          }}
+          project={selectedProject}
         />
       </main>
     </div>
