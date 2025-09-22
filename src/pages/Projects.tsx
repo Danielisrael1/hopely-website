@@ -1,70 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Button3D from '../components/Button3D';
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  status: 'ongoing' | 'completed' | 'planning';
-  location: string;
-  beneficiaries: number;
-  dateStarted: string;
-  dateCompleted?: string;
-  budget: number;
-  raised: number;
-}
+import LoginModal from '../components/LoginModal';
+import ProjectForm from '../components/ProjectForm';
+import { useAuth } from '../hooks/useAuth';
+import { projectService, type Project } from '../services/projectService';
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filter, setFilter] = useState<'all' | 'ongoing' | 'completed' | 'planning'>('all');
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showProjectForm, setShowProjectForm] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
-    // Sample projects data - in a real app, this would come from an API
-    const sampleProjects: Project[] = [
-      {
-        id: '1',
-        title: 'Clean Water Initiative',
-        description: 'Providing clean water access to rural communities through borehole drilling and water purification systems.',
-        image: '/img/IMG_4149.png',
-        status: 'ongoing',
-        location: 'Kampala, Uganda',
-        beneficiaries: 500,
-        dateStarted: '2024-01-15',
-        budget: 15000,
-        raised: 12000
-      },
-      {
-        id: '2',
-        title: 'School Feeding Program',
-        description: 'Daily nutritious meals for children in primary schools to improve attendance and learning outcomes.',
-        image: '/img/IMG_4178.png',
-        status: 'completed',
-        location: 'Jinja, Uganda',
-        beneficiaries: 300,
-        dateStarted: '2023-09-01',
-        dateCompleted: '2024-06-30',
-        budget: 8000,
-        raised: 8000
-      },
-      {
-        id: '3',
-        title: 'Digital Learning Center',
-        description: 'Establishing computer labs and internet connectivity in rural schools to bridge the digital divide.',
-        image: '/img/hope.jpg',
-        status: 'planning',
-        location: 'Gulu, Uganda',
-        beneficiaries: 200,
-        dateStarted: '2024-10-01',
-        budget: 20000,
-        raised: 5000
-      }
-    ];
-    
-    setProjects(sampleProjects);
+    fetchProjects();
   }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const projectsData = await projectService.getProjects();
+      setProjects(projectsData);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      // Fallback to sample data if Appwrite is not configured
+      const sampleProjects: Project[] = [
+        {
+          id: '1',
+          title: 'Clean Water Initiative',
+          description: 'Providing clean water access to rural communities through borehole drilling and water purification systems.',
+          image: '/img/IMG_4149.png',
+          status: 'ongoing',
+          location: 'Kampala, Uganda',
+          beneficiaries: 500,
+          dateStarted: '2024-01-15',
+          budget: 15000,
+          raised: 12000
+        },
+        {
+          id: '2',
+          title: 'School Feeding Program',
+          description: 'Daily nutritious meals for children in primary schools to improve attendance and learning outcomes.',
+          image: '/img/IMG_4178.png',
+          status: 'completed',
+          location: 'Jinja, Uganda',
+          beneficiaries: 300,
+          dateStarted: '2023-09-01',
+          dateCompleted: '2024-06-30',
+          budget: 8000,
+          raised: 8000
+        },
+        {
+          id: '3',
+          title: 'Digital Learning Center',
+          description: 'Establishing computer labs and internet connectivity in rural schools to bridge the digital divide.',
+          image: '/img/hope.jpg',
+          status: 'planning',
+          location: 'Gulu, Uganda',
+          beneficiaries: 200,
+          dateStarted: '2024-10-01',
+          budget: 20000,
+          raised: 5000
+        }
+      ];
+      setProjects(sampleProjects);
+    }
+  };
+
+  // Project management functions
+  const handleSaveProject = async (projectData: Omit<Project, 'id'>) => {
+    try {
+      if (editingProject) {
+        // Update existing project
+        await projectService.updateProject(editingProject.id, projectData);
+      } else {
+        // Add new project
+        await projectService.createProject(projectData);
+      }
+      // Refresh the projects list
+      await fetchProjects();
+      setEditingProject(null);
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Error saving project. Please try again.');
+    }
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setShowProjectForm(true);
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await projectService.deleteProject(projectId);
+        // Refresh the projects list
+        await fetchProjects();
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        alert('Error deleting project. Please try again.');
+      }
+    }
+  };
 
   const filteredProjects = filter === 'all' 
     ? projects 
@@ -98,14 +138,34 @@ const Projects: React.FC = () => {
               Discover the impactful projects we're working on to transform lives and communities across Uganda
             </p>
             
-            {/* Admin Login Button */}
+            {/* Admin Controls */}
             <div className="flex justify-center">
-              <button
-                onClick={() => setShowAdminLogin(true)}
-                className="text-sm text-white/70 hover:text-white transition-colors underline"
-              >
-                Admin Access
-              </button>
+              {isAuthenticated ? (
+                <div className="flex gap-4 items-center">
+                  <button
+                    onClick={() => {
+                      setEditingProject(null);
+                      setShowProjectForm(true);
+                    }}
+                    className="bg-white text-hopely-pink px-6 py-2 rounded-md hover:bg-gray-100 transition-colors font-semibold"
+                  >
+                    Add New Project
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="text-sm text-white/70 hover:text-white transition-colors underline"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowAdminLogin(true)}
+                  className="text-sm text-white/70 hover:text-white transition-colors underline"
+                >
+                  Admin Access
+                </button>
+              )}
             </div>
           </div>
         </section>
@@ -190,12 +250,32 @@ const Projects: React.FC = () => {
                       </div>
                     </div>
 
-                    <Button3D 
-                      text="Learn More" 
-                      size="medium" 
-                      variant="pink" 
-                      className="w-full"
-                    />
+                    <div className="flex flex-col gap-3">
+                      <Button3D 
+                        text="Learn More" 
+                        size="medium" 
+                        variant="pink" 
+                        className="w-full"
+                      />
+                      
+                      {/* Admin Controls */}
+                      {isAuthenticated && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditProject(project)}
+                            className="flex-1 px-3 py-2 text-sm border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProject(project.id)}
+                            className="flex-1 px-3 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -210,43 +290,21 @@ const Projects: React.FC = () => {
           </div>
         </section>
 
-        {/* Admin Login Modal */}
-        {showAdminLogin && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-8 max-w-md w-full">
-              <h3 className="text-2xl font-bold font-heading text-slate-800 mb-6 text-center">
-                Admin Login
-              </h3>
-              <form className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="Admin Email"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-hopely-pink focus:border-transparent"
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-hopely-pink focus:border-transparent"
-                />
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowAdminLogin(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-hopely-pink text-white py-3 rounded-lg font-semibold hover:bg-hopely-pink-dark transition-colors"
-                  >
-                    Login
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {/* Modals */}
+        <LoginModal 
+          isOpen={showAdminLogin} 
+          onClose={() => setShowAdminLogin(false)} 
+        />
+        
+        <ProjectForm
+          isOpen={showProjectForm}
+          onClose={() => {
+            setShowProjectForm(false);
+            setEditingProject(null);
+          }}
+          onSave={handleSaveProject}
+          project={editingProject}
+        />
       </main>
     </div>
   );
