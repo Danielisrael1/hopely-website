@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
               rows={5}
             ></textarea>
             
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <input 
                 type="checkbox" 
                 name="subscribe" 
@@ -64,7 +64,7 @@ const Contact: React.FC = () => {
               <label htmlFor="newsletter" className="text-sm text-gray-700">
                 Subscribe to our newsletter for updates
               </label>
-            </div>
+            </div> */}
             
             {/* Honeypot field to prevent spam */}
             <input type="hidden" name="_gotcha" style={{display: 'none !important'}} />
@@ -81,11 +81,11 @@ const Contact: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-700">
               <div className="text-center">
                 <div className="font-bold text-slate-800 mb-1">Email</div>
-                <div>info@hopely.org</div>
+                <div>info@hopelyuganda.org</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-slate-800 mb-1">Phone</div>
-                <div>+256 778000100</div>
+                <div>+256 772081010</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-slate-800 mb-1">Address</div>

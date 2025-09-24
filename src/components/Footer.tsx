@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
     <footer className="bg-slate-900 text-white py-12 px-4 md:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="font-cursive font-bold text-2xl mb-6 md:mb-0 text-hopely-pink">Hopely.org</div>
+          <div className="font-cursive font-bold text-2xl mb-6 md:mb-0 text-hopely-pink">Hopely org</div>
           
           <div className="flex flex-wrap justify-center md:justify-end gap-6 text-sm mb-6 md:mb-0">
             <a href="#" className="hover:text-hopely-pink transition-colors">What We Do</a>

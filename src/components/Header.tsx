@@ -72,10 +72,12 @@ const Header: React.FC = () => {
       }`}>
         <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto">
           {/* Logo */}
+          
           <button 
             onClick={() => navigate('/')}
-            className="font-cursive font-bold text-xl sm:text-2xl text-white z-50 hover:text-hopely-pink transition-colors duration-200"
+            className="font-cursive flex items-center font-bold text-xl sm:text-2xl text-white z-50 hover:text-hopely-pink transition-colors duration-200"
           >
+            <img src="/logo.png" alt="Hopely Uganda Logo" className="h-10 w-10 object-contain mr-2 cursor-pointer" onClick={() => navigate('/')} />
             Hopely Uganda
           </button>
 
