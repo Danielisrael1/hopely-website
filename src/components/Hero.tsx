@@ -12,7 +12,7 @@ const Hero: React.FC = () => {
       <div
         ref={bgRef}
         className="absolute inset-0 bg-cover bg-center parallax-layer pointer-events-none"
-        style={{ backgroundImage: "url('/img/IMG_4149.png')" }}
+        style={{ backgroundImage: "url('/img/IMG_4149.webp')" }}
         aria-hidden="true"
       />
       
