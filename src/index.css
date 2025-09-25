@@ -46,6 +46,14 @@ html {
   left: 0;
 }
 
+/* Optimized parallax layer utility */
+.parallax-layer {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.05s linear; /* tiny smoothing for very fast scroll wheels */
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Button3D from './Button3D';
+import useParallax from '../hooks/useParallax';
 
 const Hero: React.FC = () => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Parallax background (disabled on small screens & reduced motion)
+  const bgRef = useParallax({ speed: 0.45, disableBelow: 640 });
 
   return (
-    <section className="relative h-screen flex flex-col justify-center items-center overflow-hidden">
-      {/* Parallax Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{
-          backgroundImage: "url('/img/IMG_4149.png')",
-          transform: `translateY(${scrollY * 0.5}px)`
-        }}
+    <section className="relative h-[100svh] flex flex-col justify-center items-center overflow-hidden">
+      {/* Parallax Background (no background-attachment:fixed to avoid jank) */}
+      <div
+        ref={bgRef}
+        className="absolute inset-0 bg-cover bg-center parallax-layer pointer-events-none"
+        style={{ backgroundImage: "url('/img/IMG_4149.png')" }}
+        aria-hidden="true"
       />
       
       {/* Dark Overlay */}
