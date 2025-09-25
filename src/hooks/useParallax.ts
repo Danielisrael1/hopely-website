@@ -9,6 +9,8 @@ export interface ParallaxOptions {
   axis?: 'y' | 'x';
   /** Disable parallax when viewport width is below this (helps on mobile). */
   disableBelow?: number;
+  /** When true uses translateY only (no translate3d) for a plain parallax effect. */
+  plain?: boolean;
 }
 
 /**
@@ -23,6 +25,7 @@ export function useParallax(options: ParallaxOptions = {}) {
     maxTranslate,
     axis = 'y',
     disableBelow = 640, // sm breakpoint default
+    plain = false,
   } = options;
 
   const elRef = useRef<HTMLDivElement | null>(null);
@@ -44,9 +47,9 @@ export function useParallax(options: ParallaxOptions = {}) {
         ? Math.max(Math.min(raw, maxTranslate), -maxTranslate)
         : raw;
       if (axis === 'y') {
-        el.style.transform = `translate3d(0, ${value}px, 0)`;
+        el.style.transform = plain ? `translateY(${value}px)` : `translate3d(0, ${value}px, 0)`;
       } else {
-        el.style.transform = `translate3d(${value}px, 0, 0)`;
+        el.style.transform = plain ? `translateX(${value}px)` : `translate3d(${value}px, 0, 0)`;
       }
     };
 
@@ -63,7 +66,7 @@ export function useParallax(options: ParallaxOptions = {}) {
       window.removeEventListener('scroll', onScroll);
       if (frame != null) cancelAnimationFrame(frame);
     };
-  }, [speed, maxTranslate, axis, disableBelow]);
+  }, [speed, maxTranslate, axis, disableBelow, plain]);
 
   return elRef;
 }

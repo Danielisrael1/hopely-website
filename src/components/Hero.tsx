@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button3D from './Button3D';
 import useParallax from '../hooks/useParallax';
 
 const Hero: React.FC = () => {
-  // Parallax background (disabled on small screens & reduced motion)
-  const bgRef = useParallax({ speed: 0.45, disableBelow: 640 });
+  // Image load state for blur-up
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  // Plain (non-3D) parallax background (disabled on small screens & reduced motion)
+  const wrapperRef = useParallax({ speed: 0.25, disableBelow: 640, plain: true });
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete) setLoaded(true);
+  }, []);
 
   return (
     <section className="relative h-[100svh] flex flex-col justify-center items-center overflow-hidden">
-      {/* Parallax Background (no background-attachment:fixed to avoid jank) */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 bg-cover bg-center parallax-layer pointer-events-none"
-        style={{ backgroundImage: "url('/img/IMG_4149.webp')" }}
-        aria-hidden="true"
-      />
+      {/* Parallax Background (plain parallax + blur loading) */}
+      <div ref={wrapperRef} className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <img
+          ref={imgRef}
+            src="/img/IMG_4149.webp"
+          alt=""
+          className={`w-full h-full object-cover transition-all duration-700 ease-out ${loaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-105 opacity-80'}`}
+          onLoad={() => setLoaded(true)}
+          decoding="async"
+          fetchPriority="high"
+        />
+      </div>
       
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />

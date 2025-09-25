@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const Team: React.FC = () => {
   const teamMembers = [
@@ -56,6 +56,17 @@ const Team: React.FC = () => {
   const [touchEnd, setTouchEnd] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  // Calculate how many cards to show per view
+  const getCardsPerView = useCallback(() => {
+    if (isMobile) return 1;
+    return 3;
+  }, [isMobile]);
+
+  // Calculate the maximum index based on cards per view
+  const getMaxIndex = useCallback(() => {
+    return Math.max(0, teamMembers.length - getCardsPerView());
+  }, [teamMembers.length, getCardsPerView]);
+
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
@@ -67,27 +78,29 @@ const Team: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Auto-play functionality
+  // Auto-play functionality (desktop: stop at maxIndex to avoid empty gap)
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % teamMembers.length);
+      const maxIndex = getMaxIndex();
+      setCurrentIndex(prevIndex => {
+        // On mobile (cardsPerView = 1) maxIndex === length-1 so this still advances each card.
+        return prevIndex >= maxIndex ? 0 : prevIndex + 1;
+      });
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, teamMembers.length]);
+  }, [isAutoPlaying, teamMembers.length, isMobile, getMaxIndex]);
 
-  // Calculate how many cards to show per view
-  const getCardsPerView = () => {
-    if (isMobile) return 1;
-    return 3;
-  };
+  // Clamp index when layout changes (e.g., resize between mobile/desktop)
+  useEffect(() => {
+    const maxIndex = getMaxIndex();
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(maxIndex);
+    }
+  }, [isMobile, teamMembers.length, currentIndex, getMaxIndex]);
 
-  // Calculate the maximum index based on cards per view
-  const getMaxIndex = () => {
-    return Math.max(0, teamMembers.length - getCardsPerView());
-  };
 
   const goToSlide = (index: number) => {
     const maxIndex = getMaxIndex();
@@ -95,9 +108,7 @@ const Team: React.FC = () => {
   };
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? getMaxIndex() : prevIndex - 1
-    );
+    setCurrentIndex(prev => (prev === 0 ? getMaxIndex() : prev - 1));
   };
 
   const goToNext = () => {
@@ -224,7 +235,7 @@ const Team: React.FC = () => {
 
           {/* Dots Indicator */}
           <div className="flex justify-center gap-2 mt-8">
-            {Array.from({ length: Math.ceil(teamMembers.length / getCardsPerView()) }).map((_, index) => (
+            {Array.from({ length: getMaxIndex() + 1 }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
