@@ -113,6 +113,12 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <button 
+              onClick={() => navigate('/')}
+              className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
+            >
+              Home
+            </button>
+            <button 
               onClick={() => scrollToSection('what-we-do')}
               className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
             >
@@ -172,8 +178,17 @@ const Header: React.FC = () => {
         }`}>
           {/* Menu Content */}
           <div className="flex flex-col h-full pt-20 pb-6 px-6">
-            {/* Navigation Links */}
-            <nav className="flex flex-col space-y-6">
+            {/* Mobile Navigation */}
+            <nav className="flex flex-col space-y-2 py-6">
+              <button 
+                onClick={() => {
+                  navigate('/');
+                  closeMenu();
+                }}
+                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
+              >
+                Home
+              </button>
               <button 
                 onClick={() => {
                   scrollToSection('what-we-do');
