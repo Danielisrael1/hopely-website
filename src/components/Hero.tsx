@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button3D from './Button3D';
 import useParallax from '../hooks/useParallax';
+import { AppwriteService, type HeroContent } from '../services/appwrite';
 
 const Hero: React.FC = () => {
   // Image load state for blur-up
@@ -8,6 +9,23 @@ const Hero: React.FC = () => {
   const imgRef = useRef<HTMLImageElement | null>(null);
   // Plain (non-3D) parallax background (disabled on small screens & reduced motion)
   const wrapperRef = useParallax({ speed: 0.25, disableBelow: 640, plain: true });
+  
+  // State for hero content from CMS
+  const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
+
+  // Fetch hero content from Appwrite
+  useEffect(() => {
+    const fetchHeroContent = async () => {
+      try {
+        const content = await AppwriteService.getHeroContent();
+        setHeroContent(content);
+      } catch (error) {
+        console.error('Failed to fetch hero content:', error);
+      }
+    };
+
+    fetchHeroContent();
+  }, []);
 
   useEffect(() => {
     const img = imgRef.current;
@@ -15,13 +33,22 @@ const Hero: React.FC = () => {
     if (img.complete) setLoaded(true);
   }, []);
 
+  // Use CMS content or fallback
+  const content = heroContent || {
+    title: 'Hopely Uganda',
+    subtitle: 'Empowering communities, transforming lives, creating hope for children in Uganda',
+    buttonText: 'DONATE',
+    buttonUrl: 'https://gofund.me/266a82aa',
+    backgroundImage: '/img/IMG_4149.webp',
+  };
+
   return (
     <section className="relative h-[100svh] flex flex-col justify-center items-center overflow-hidden">
       {/* Parallax Background (plain parallax + blur loading) */}
       <div ref={wrapperRef} className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <img
           ref={imgRef}
-            src="/img/IMG_4149.webp"
+          src={content.backgroundImage}
           alt=""
           className={`w-full h-full object-cover transition-all duration-700 ease-out ${loaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-105 opacity-80'}`}
           onLoad={() => setLoaded(true)}
@@ -36,12 +63,12 @@ const Hero: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-4">
         <h1 className="text-5xl md:text-7xl font-heading font-bold text-white drop-shadow-2xl mb-6 animate-fade-in">
-          Hopely Uganda
+          {content.title}
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl drop-shadow-lg">
-          Empowering communities, transforming lives, creating hope for children in Uganda
+          {content.subtitle}
         </p>
-        <Button3D text="DONATE " size="large" variant="pink" className="px-24 text-lg shadow-xl" href="https://gofund.me/266a82aa" />
+        <Button3D text={content.buttonText} size="large" variant="pink" className="px-24 text-lg shadow-xl" href={content.buttonUrl} />
       </div>
       
       {/* Scroll Indicator */}

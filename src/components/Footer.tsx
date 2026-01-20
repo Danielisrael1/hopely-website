@@ -1,22 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AppwriteService, type SiteSettings } from '../services/appwrite';
 
 const Footer: React.FC = () => {
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+
+  // Fetch site settings from Appwrite
+  useEffect(() => {
+    const fetchSiteSettings = async () => {
+      try {
+        const settings = await AppwriteService.getSiteSettings();
+        setSiteSettings(settings);
+      } catch (error) {
+        console.error('Failed to fetch site settings:', error);
+      }
+    };
+
+    fetchSiteSettings();
+  }, []);
+
+  // Use CMS settings or fallback
+  const settings = siteSettings || {
+    siteName: 'Hopely Uganda',
+    primaryDonationUrl: 'https://gofund.me/266a82aa',
+    instagramUrl: '#',
+    facebookUrl: '#',
+    twitterUrl: '#',
+  };
+
   return (
     <footer className="bg-slate-900 text-white py-12 px-4 md:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="font-cursive font-bold text-2xl mb-6 md:mb-0 text-hopely-pink">Hopely org</div>
+          <div className="font-cursive font-bold text-2xl mb-6 md:mb-0 text-hopely-pink">{settings.siteName}</div>
           
           <div className="flex flex-wrap justify-center md:justify-end gap-6 text-sm mb-6 md:mb-0">
-            <a href="#" className="hover:text-hopely-pink transition-colors">What We Do</a>
-            <a href="#" className="hover:text-hopely-pink transition-colors">Get Involved</a>
-            <a href="#" className="hover:text-hopely-pink transition-colors">Projects</a>
-            <a href="https://gofund.me/266a82aa" target="_blank" rel="noopener noreferrer" className="hover:text-hopely-pink transition-colors">Donate</a>
+            <a href="#what-we-do" className="hover:text-hopely-pink transition-colors">What We Do</a>
+            <a href="#get-involved" className="hover:text-hopely-pink transition-colors">Get Involved</a>
+            <a href="/projects" className="hover:text-hopely-pink transition-colors">Projects</a>
+            <a href={settings.primaryDonationUrl} target="_blank" rel="noopener noreferrer" className="hover:text-hopely-pink transition-colors">Donate</a>
           </div>
           
           <div className="flex space-x-4">
             <a 
-              href="#" 
+              href={settings.instagramUrl}
               aria-label="Instagram"
               className="hover:text-hopely-pink transition-colors hover:scale-110 transform duration-200"
             >
@@ -25,7 +51,7 @@ const Footer: React.FC = () => {
               </svg>
             </a>
             <a 
-              href="#" 
+              href={settings.facebookUrl}
               aria-label="Facebook"
               className="hover:text-hopely-pink transition-colors hover:scale-110 transform duration-200"
             >
@@ -34,7 +60,7 @@ const Footer: React.FC = () => {
               </svg>
             </a>
             <a 
-              href="#" 
+              href={settings.twitterUrl}
               aria-label="Twitter"
               className="hover:text-hopely-pink transition-colors hover:scale-110 transform duration-200"
             >
@@ -47,7 +73,7 @@ const Footer: React.FC = () => {
         
         <div className="border-t border-slate-700 pt-6">
           <div className="text-xs text-center text-gray-400">
-            © Hopely.org {new Date().getFullYear()} &nbsp; | &nbsp; Non-profit organization &nbsp; | &nbsp; All rights reserved
+            © {settings.siteName} {new Date().getFullYear()} &nbsp; | &nbsp; Non-profit organization &nbsp; | &nbsp; All rights reserved
           </div>
         </div>
       </div>

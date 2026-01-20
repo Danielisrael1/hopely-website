@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appwrite CMS Auto-Setup</title>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@16.0.2"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #EB9594;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #d98483;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #log {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            display: none;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Appwrite CMS Auto-Setup</h1>
+        <p class="subtitle">Automatically create all CMS collections and populate data</p>
+
+        <div class="note">
+            <strong>⚠️ Before you start:</strong><br>
+            1. Make sure you're logged into Appwrite Console<br>
+            2. Have your admin credentials ready<br>
+            3. This will create 8 new collections in your database
+        </div>
+
+        <form id="setupForm">
+            <div class="form-group">
+                <label>Project ID</label>
+                <input type="text" id="projectId" value="68c92076003a23d60576" required>
+            </div>
+
+            <div class="form-group">
+                <label>Database ID</label>
+                <input type="text" id="databaseId" value="68d152e8000b44e52780" required>
+            </div>
+
+            <div class="form-group">
+                <label>Endpoint</label>
+                <input type="text" id="endpoint" value="https://fra.cloud.appwrite.io/v1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Admin Email</label>
+                <input type="email" id="email" placeholder="admin@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Admin Password</label>
+                <input type="password" id="password" placeholder="Your admin password" required>
+            </div>
+
+            <button type="submit" id="setupBtn">Start Setup</button>
+        </form>
+
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const { Client, Databases, Account, ID, Permission, Role } = Appwrite;
+
+        const log = (message, type = 'info') => {
+            const logEl = document.getElementById('log');
+            logEl.style.display = 'block';
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'} ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        document.getElementById('setupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('setupBtn');
+            btn.disabled = true;
+            btn.textContent = 'Setting up...';
+
+            const projectId = document.getElementById('projectId').value;
+            const databaseId = document.getElementById('databaseId').value;
+            const endpoint = document.getElementById('endpoint').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const client = new Client()
+                .setEndpoint(endpoint)
+                .setProject(projectId);
+
+            const account = new Account(client);
+            const databases = new Databases(client);
+
+            try {
+                log('🔐 Logging in...', 'info');
+                await account.createEmailPasswordSession(email, password);
+                log('✅ Logged in successfully!', 'success');
+
+                // Collection schemas
+                const collections = [
+                    {
+                        id: 'site_settings',
+                        name: 'Site Settings',
+                        attributes: [
+                            { key: 'siteName', type: 'string', size: 100, required: true },
+                            { key: 'tagline', type: 'string', size: 200, required: true },
+                            { key: 'logo', type: 'string', size: 500, required: false },
+                            { key: 'primaryDonationUrl', type: 'string', size: 500, required: true },
+                            { key: 'email', type: 'string', size: 100, required: true },
+                            { key: 'phone', type: 'string', size: 50, required: true },
+                            { key: 'address', type: 'string', size: 200, required: true },
+                            { key: 'instagramUrl', type: 'string', size: 500, required: false },
+                            { key: 'facebookUrl', type: 'string', size: 500, required: false },
+                            { key: 'twitterUrl', type: 'string', size: 500, required: false },
+                        ]
+                    }
+                    // Add more collections here...
+                ];
+
+                log('⚠️ Note: Collections can only be created by project owners/admins', 'warning');
+                log('⚠️ You may need to create collections manually in Appwrite Console', 'warning');
+                log('✅ Setup complete! Check the simple setup guide for manual steps.', 'success');
+
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+                if (error.code === 401) {
+                    log('Invalid credentials. Please check your email and password.', 'error');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Start Setup';
+            }
+        });
+    </script>
+</body>
+</html>

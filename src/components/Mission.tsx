@@ -1,6 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AppwriteService, type MissionSection, type MissionItem } from '../services/appwrite';
 
 const Mission: React.FC = () => {
+  const [missionSection, setMissionSection] = useState<MissionSection | null>(null);
+  const [missionItems, setMissionItems] = useState<MissionItem[]>([]);
+
+  // Fetch mission data from Appwrite
+  useEffect(() => {
+    const fetchMissionData = async () => {
+      try {
+        const [sectionData, itemsData] = await Promise.all([
+          AppwriteService.getMissionSection(),
+          AppwriteService.getMissionItems()
+        ]);
+        setMissionSection(sectionData);
+        setMissionItems(itemsData);
+      } catch (error) {
+        console.error('Failed to fetch mission data:', error);
+      }
+    };
+
+    fetchMissionData();
+  }, []);
+
+  // Use CMS data or fallback
+  const section = missionSection || {
+    title: 'Join in our mission',
+    missionImage: '/mission.jpg',
+    ctaButtonText: 'Join Us',
+    ctaButtonUrl: 'https://gofund.me/266a82aa',
+  };
+
+  const items = missionItems.length > 0 ? missionItems : [
+    { text: 'Donate directly, whether regular or one-off', icon: '🎁', order: 1 },
+    { text: 'Volunteer your time or skills', icon: '🤝', order: 2 },
+    { text: 'Help us reach more children in need', icon: '❤️', order: 3 },
+    { text: 'Share our mission with your network', icon: '📤', order: 4 },
+  ];
+
   return (
     <section className="bg-slate-800 text-white py-16 px-4 md:px-16">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-center">
@@ -15,7 +52,7 @@ const Mission: React.FC = () => {
                     width="100%" 
                     height="100%" 
                     preserveAspectRatio="xMidYMid slice" 
-                    href="/img/hope.jpg" 
+                    href={section.missionImage} 
                   />
                 </pattern>
               </defs>
@@ -62,48 +99,22 @@ const Mission: React.FC = () => {
           </div>
         </div>
         <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-6 text-hopely-pink font-heading">Join in our mission</h2>
+          <h2 className="text-3xl font-bold mb-6 text-hopely-pink font-heading">{section.title}</h2>
           <ul className="mb-6 space-y-4 text-lg">
-            <li className="flex items-center gap-4">
-              <img 
-                src="/icons/gift.png" 
-                alt="Charity" 
-                className="w-8 h-8 flex-shrink-0"
-              />
-              <span>Donate directly, whether regular or one-off</span>
-            </li>
-            <li className="flex items-center gap-4">
-              <img 
-                src="/icons/volunteer.png" 
-                alt="Volunteer" 
-                className="w-8 h-8 flex-shrink-0"
-              />
-              <span>Volunteer your time or skills</span>
-            </li>
-            <li className="flex items-center gap-4">
-              <img 
-                src="/icons/infocards/heart.png" 
-                alt="Gift" 
-                className="w-8 h-8 flex-shrink-0"
-              />
-              <span>Help us reach more children in need</span>
-            </li>
-            <li className="flex items-center gap-4">
-              <img 
-                src="/icons/send.png" 
-                alt="Share" 
-                className="w-8 h-8 flex-shrink-0"
-              />
-              <span>Share our mission with your network</span>
-            </li>
+            {items.map((item, index) => (
+              <li key={index} className="flex items-center gap-4">
+                <span className="text-2xl">{item.icon}</span>
+                <span>{item.text}</span>
+              </li>
+            ))}
           </ul>
           <a 
-            href="https://gofund.me/266a82aa" 
+            href={section.ctaButtonUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="bg-hopely-pink text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-hopely-pink-dark hover:scale-105 transition-all duration-300 shadow-lg inline-block"
           >
-            Join Us
+            {section.ctaButtonText}
           </a>
         </div>
       </div>

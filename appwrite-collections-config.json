@@ -1,0 +1,118 @@
+{
+  "collections": [
+    {
+      "name": "site_settings",
+      "id": "site_settings",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "siteName", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "tagline", "type": "string", "size": 200, "required": true, "array": false},
+        {"key": "logo", "type": "string", "size": 500, "required": false, "array": false},
+        {"key": "primaryDonationUrl", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "email", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "phone", "type": "string", "size": 50, "required": true, "array": false},
+        {"key": "address", "type": "string", "size": 200, "required": true, "array": false},
+        {"key": "instagramUrl", "type": "string", "size": 500, "required": false, "array": false},
+        {"key": "facebookUrl", "type": "string", "size": 500, "required": false, "array": false},
+        {"key": "twitterUrl", "type": "string", "size": 500, "required": false, "array": false}
+      ]
+    },
+    {
+      "name": "hero_content",
+      "id": "hero_content",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "title", "type": "string", "size": 200, "required": true, "array": false},
+        {"key": "subtitle", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "buttonText", "type": "string", "size": 50, "required": true, "array": false},
+        {"key": "buttonUrl", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "backgroundImage", "type": "string", "size": 500, "required": true, "array": false}
+      ]
+    },
+    {
+      "name": "mission_section",
+      "id": "mission_section",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "title", "type": "string", "size": 200, "required": true, "array": false},
+        {"key": "missionImage", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "ctaButtonText", "type": "string", "size": 50, "required": true, "array": false},
+        {"key": "ctaButtonUrl", "type": "string", "size": 500, "required": true, "array": false}
+      ]
+    },
+    {
+      "name": "mission_items",
+      "id": "mission_items",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "text", "type": "string", "size": 300, "required": true, "array": false},
+        {"key": "icon", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "order", "type": "integer", "required": true, "array": false, "min": 0, "max": 9999}
+      ]
+    },
+    {
+      "name": "ngo_section",
+      "id": "ngo_section",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "title", "type": "string", "size": 200, "required": true, "array": false},
+        {"key": "description", "type": "string", "size": 2000, "required": true, "array": false}
+      ]
+    },
+    {
+      "name": "info_cards",
+      "id": "info_cards",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "title", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "description", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "backgroundImage", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "iconImage", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "order", "type": "integer", "required": true, "array": false, "min": 0, "max": 9999}
+      ]
+    },
+    {
+      "name": "banner_sections",
+      "id": "banner_sections",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "sectionKey", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "title", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "subtitle", "type": "string", "size": 1000, "required": false, "array": false},
+        {"key": "backgroundImage", "type": "string", "size": 500, "required": false, "array": false},
+        {"key": "buttonText", "type": "string", "size": 50, "required": false, "array": false},
+        {"key": "buttonUrl", "type": "string", "size": 500, "required": false, "array": false}
+      ]
+    },
+    {
+      "name": "team_members",
+      "id": "team_members",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "name", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "role", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "location", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "image", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "description", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "email", "type": "string", "size": 100, "required": false, "array": false},
+        {"key": "order", "type": "integer", "required": true, "array": false, "min": 0, "max": 9999}
+      ]
+    }
+  ]
+}
