@@ -204,7 +204,9 @@ const Team: React.FC = () => {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {teamMembers.map((member, index) => (
+              {teamMembers.map((member, index) => {
+                console.log(`Team member ${member.name} image URL:`, member.image);
+                return (
                 <div 
                   key={`member-${index}`}
                   className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-2 sm:px-4"
@@ -214,7 +216,12 @@ const Team: React.FC = () => {
                       <img 
                         src={member.image} 
                         alt={member.name} 
-                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover rounded-full shadow-md" 
+                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover rounded-full shadow-md"
+                        onError={(e) => {
+                          console.error('Team member image failed to load:', member.image);
+                          // Fallback to placeholder
+                          (e.target as HTMLImageElement).src = '/img/teams/placeholder.jpg';
+                        }}
                       />
                      
                     </div>
@@ -245,7 +252,8 @@ const Team: React.FC = () => {
                     </button> */}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
 

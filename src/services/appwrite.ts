@@ -3,7 +3,7 @@
  * Handles all communication with Appwrite backend
  */
 
-import { Client, Databases, ID, Query } from 'appwrite';
+import { Client, Databases, Storage, ID, Query } from 'appwrite';
 
 // Initialize Appwrite client
 const client = new Client()
@@ -11,7 +11,9 @@ const client = new Client()
   .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID || '');
 
 const databases = new Databases(client);
+const storage = new Storage(client);
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID || '';
+const STORAGE_BUCKET_ID = import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID || 'images';
 
 // Types for our data
 export interface SiteSettings {
@@ -225,7 +227,9 @@ export class AppwriteService {
         DATABASE_ID,
         'team_members'
       );
-      return response.documents.map(doc => doc as unknown as TeamMember).sort((a, b) => a.order - b.order);
+      const members = response.documents.map(doc => doc as unknown as TeamMember).sort((a, b) => a.order - b.order);
+      console.log('Retrieved team members:', members);
+      return members;
     } catch (error) {
       console.error('Error fetching team members:', error);
       return [];
@@ -468,23 +472,90 @@ export class AppwriteService {
 
   // Save all team members
   static async saveTeamMembers(items: (TeamMember & { $id?: string })[]): Promise<void> {
+    console.log('saveTeamMembers called with:', items);
     const existingResponse = await databases.listDocuments(DATABASE_ID, 'team_members');
     const existingIds = new Set(existingResponse.documents.map(doc => doc.$id));
     const newIds = new Set(items.filter(item => item.$id).map(item => item.$id));
 
+    console.log('Existing IDs in DB:', Array.from(existingIds));
+    console.log('IDs from items:', Array.from(newIds));
+
     for (const doc of existingResponse.documents) {
       if (!newIds.has(doc.$id)) {
+        console.log('Deleting document:', doc.$id);
         await databases.deleteDocument(DATABASE_ID, 'team_members', doc.$id);
       }
     }
 
     for (const item of items) {
       const { $id, ...data } = item;
+      console.log('Processing item:', { $id, data });
       if ($id && existingIds.has($id)) {
+        console.log('Updating document:', $id, data);
         await databases.updateDocument(DATABASE_ID, 'team_members', $id, data);
       } else {
+        console.log('Creating new document:', data);
         await databases.createDocument(DATABASE_ID, 'team_members', ID.unique(), data);
       }
+    }
+  }
+
+  // ==================== IMAGE UPLOAD ====================
+
+  // Upload an image to Appwrite Storage
+  static async uploadImage(file: File): Promise<string> {
+    try {
+      const response = await storage.createFile(
+        STORAGE_BUCKET_ID,
+        ID.unique(),
+        file
+      );
+      
+      // Get the file preview URL (more reliable for images)
+      // Using getFilePreview instead of getFileView for better compatibility
+      const fileUrl = storage.getFilePreview(
+        STORAGE_BUCKET_ID, 
+        response.$id,
+        400, // width
+        400, // height
+        undefined, // gravity
+        100 // quality
+      );
+      
+      // Convert URL object to string properly
+      const urlString = fileUrl.href || fileUrl.toString();
+      console.log('Uploaded image URL:', urlString);
+      return urlString;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  }
+
+  // Get file view URL for a file ID
+  static getFileViewUrl(fileId: string): string {
+    const url = storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 400, 400);
+    return url.href || url.toString();
+  }
+
+  // Delete an image from Appwrite Storage
+  static async deleteImage(fileId: string): Promise<void> {
+    try {
+      await storage.deleteFile(STORAGE_BUCKET_ID, fileId);
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      // Don't throw - file might already be deleted
+    }
+  }
+
+  // Extract file ID from Appwrite storage URL
+  static getFileIdFromUrl(url: string): string | null {
+    try {
+      // URL format: https://[endpoint]/v1/storage/buckets/[bucketId]/files/[fileId]/view
+      const match = url.match(/\/files\/([^/]+)\/view/);
+      return match ? match[1] : null;
+    } catch {
+      return null;
     }
   }
 }

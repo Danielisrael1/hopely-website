@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { AppwriteService, type SiteSettings, type HeroContent, type MissionSection, type MissionItem, type NGOSection, type InfoCard, type TeamMember } from '../services/appwrite';
+import ImageUpload from '../components/ImageUpload';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -183,9 +184,11 @@ const AdminDashboard: React.FC = () => {
   const saveTeamMembers = async () => {
     try {
       setLoading(true);
+      console.log('Saving team members:', teamMembers);
       await AppwriteService.saveTeamMembers(teamMembers);
       // Reload team members to get updated $ids
       const updatedMembers = await AppwriteService.getTeamMembers();
+      console.log('Updated team members from DB:', updatedMembers);
       setTeamMembers(updatedMembers as (TeamMember & { $id?: string })[]);
       showMessage('Team members saved successfully!', 'success');
     } catch (error) {
@@ -665,16 +668,15 @@ const AdminDashboard: React.FC = () => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
                           />
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
-                          <input
-                            type="text"
-                            value={member.image}
-                            onChange={(e) => updateTeamMember(index, 'image', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <ImageUpload
+                            label="Team Member Photo"
+                            currentImage={member.image}
+                            onImageUploaded={(url) => updateTeamMember(index, 'image', url)}
+                            onImageRemoved={() => updateTeamMember(index, 'image', '')}
                           />
                         </div>
-                        <div>
+                        <div className="md:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                           <textarea
                             value={member.description}
