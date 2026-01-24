@@ -1,60 +1,76 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { AppwriteService, type TeamMember } from '../services/appwrite';
 
 const Team: React.FC = () => {
-  const teamMembers = [
-    {
-      id: 3,
-      name: "Byaruhanga Felicity",
-      role: "TEAM LEAD CANADA",
-      location: "Canada",
-      image: "/img/teams/team3.jpg",
-      description: "Felicity leads our Canadian operations and coordinates international partnerships for Hopely.org.",
-      email: "felicity@hopely.org"
-    },
-    {
-      id: 4,
-      name: "Lukwago Daniel",
-      role: "TEAM LEAD UGANDA",
-      location: "Uganda",
-      image: "/img/teams/team4.jpg",
-      description: "Daniel leads our Uganda team and manages community outreach and local partnerships on the ground.",
-      email: "daniel@hopely.org"
-    },
-    {
-      id: 5,
-      name: "Brooke Ramos Dickson",
-      role: "COMMUNICATIONS DIRECTOR",
-      location: "Canada",
-      image: "/img/teams/team5.jpg",
-      description: "Brooke manages our communications, storytelling, and digital outreach to spread awareness of our mission.",
-      email: "brooke@hopely.org"
-    },
-    {
-      id: 1,
-      name: "Jjunju Micheal",
-      role: "FIELD OPERATIONS DIRECTOR",
-      location: "Uganda",
-      image: "/img/teams/team1.jpg",
-      description: "Micheal oversees all field operations in Uganda, ensuring our programs reach the communities that need them most.",
-      email: "micheal@hopely.org"
-    },
-    {
-      id: 2,
-      name: "Kisakye Dorah",
-      role: "FINANCE DIRECTOR",
-      location: "Uganda",
-      image: "/img/teams/team2.jpg",
-      description: "Dorah manages our finances with transparency and ensures every donation is used effectively for maximum impact.",
-      email: "dorah@hopely.org"
-    }
-  ];
-
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Fetch team members from Appwrite
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const members = await AppwriteService.getTeamMembers();
+        setTeamMembers(members);
+      } catch (error) {
+        console.error('Failed to fetch team members:', error);
+        // Use fallback data if CMS fails
+        setTeamMembers([
+          {
+            name: "Byaruhanga Felicity",
+            role: "TEAM LEAD CANADA",
+            location: "Canada",
+            image: "/img/teams/team3.jpg",
+            description: "Felicity leads our Canadian operations and coordinates international partnerships for Hopely.org.",
+            email: "felicity@hopely.org",
+            order: 1
+          },
+          {
+            name: "Lukwago Daniel",
+            role: "TEAM LEAD UGANDA",
+            location: "Uganda",
+            image: "/img/teams/team4.jpg",
+            description: "Daniel leads our Uganda team and manages community outreach and local partnerships on ground.",
+            email: "daniel@hopely.org",
+            order: 2
+          },
+          {
+            name: "Brooke Ramos Dickson",
+            role: "COMMUNICATIONS DIRECTOR",
+            location: "Canada",
+            image: "/img/teams/team5.jpg",
+            description: "Brooke manages our communications, storytelling, and digital outreach to spread awareness of our mission.",
+            email: "brooke@hopely.org",
+            order: 3
+          },
+          {
+            name: "Jjunju Micheal",
+            role: "FIELD OPERATIONS DIRECTOR",
+            location: "Uganda",
+            image: "/img/teams/team1.jpg",
+            description: "Micheal oversees all field operations in Uganda, ensuring our programs reach communities that need them most.",
+            email: "micheal@hopely.org",
+            order: 4
+          },
+          {
+            name: "Kisakye Dorah",
+            role: "FINANCE DIRECTOR",
+            location: "Uganda",
+            image: "/img/teams/team2.jpg",
+            description: "Dorah manages our finances with transparency and ensures every donation is used effectively for maximum impact.",
+            email: "dorah@hopely.org",
+            order: 5
+          }
+        ]);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
 
   // Calculate how many cards to show per view
   const getCardsPerView = useCallback(() => {
@@ -188,9 +204,11 @@ const Team: React.FC = () => {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {teamMembers.map((member) => (
+              {teamMembers.map((member, index) => {
+                console.log(`Team member ${member.name} image URL:`, member.image);
+                return (
                 <div 
-                  key={member.id}
+                  key={`member-${index}`}
                   className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-2 sm:px-4"
                 >
                   <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 h-full flex flex-col items-center hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-100 mx-2 sm:mx-0">
@@ -198,7 +216,12 @@ const Team: React.FC = () => {
                       <img 
                         src={member.image} 
                         alt={member.name} 
-                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover rounded-full shadow-md" 
+                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover rounded-full shadow-md"
+                        onError={(e) => {
+                          console.error('Team member image failed to load:', member.image);
+                          // Fallback to placeholder
+                          (e.target as HTMLImageElement).src = '/img/teams/placeholder.jpg';
+                        }}
                       />
                      
                     </div>
@@ -229,7 +252,8 @@ const Team: React.FC = () => {
                     </button> */}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
 

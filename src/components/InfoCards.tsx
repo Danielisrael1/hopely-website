@@ -1,26 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AppwriteService } from '../services/appwrite';
+
+interface InfoCard {
+  title: string;
+  description: string;
+  backgroundImage: string;
+  iconImage: string;
+  order: number;
+}
 
 const InfoCards: React.FC = () => {
-  const cards = [
+  const [cards, setCards] = useState<InfoCard[]>([
     {
       title: "Your Donation",
       description: "We are hoping to have people across the world to help us in our mission to make children have a better future.",
       backgroundImage: "/img/coin-donation.jpg",
-      iconImage: "/icons/infocards/heart.png"
+      iconImage: "/icons/infocards/heart.png",
+      order: 1
     },
     {
       title: "Complete Projects",
       description: "We provide updates on completed and ongoing projects, ensuring transparency and impact in our community work.",
       backgroundImage: "/img/IMG_4178.png",
-      iconImage: "/icons/infocards/project.png"
+      iconImage: "/icons/infocards/project.png",
+      order: 2
     },
     {
       title: "Hopekid",
       description: "We also have a sponsorship programme where you can sponsor a child and help them get access to education and basic needs.",
       backgroundImage: "/img/IMG_4149.png",
-      iconImage: "/icons/infocards/baby.png"
+      iconImage: "/icons/infocards/baby.png",
+      order: 3
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const data = await AppwriteService.getInfoCards();
+        if (data && data.length > 0) {
+          setCards(data.sort((a, b) => a.order - b.order));
+        }
+      } catch (error) {
+        console.error('Error fetching info cards:', error);
+        // Keep default cards on error
+      }
+    };
+    fetchCards();
+  }, []);
 
   return (
     <section className="py-8 bg-white">

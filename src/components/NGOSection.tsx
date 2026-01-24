@@ -1,6 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AppwriteService } from '../services/appwrite';
+
+interface NGOContent {
+  title: string;
+  description: string;
+}
 
 const NGOSection: React.FC = () => {
+  const [content, setContent] = useState<NGOContent>({
+    title: 'Non-Governmental Organization',
+    description: 'Hopely supports underprivileged children across Uganda, giving them hope for a better future by providing them with access to education, food, and clothing. Our goal is to save as many lives as possible and ensure a bright future for those who are below the breadline. We envision a Uganda without hunger, illiteracy, or disease, where every child can reach their full potential.'
+  });
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await AppwriteService.getNGOSection();
+        if (data && data.title && data.description) {
+          setContent(data);
+        }
+      } catch (error) {
+        console.error('Error fetching NGO section:', error);
+        // Keep default content on error
+      }
+    };
+    fetchContent();
+  }, []);
+
+  // Split title by newline or use "Organization" as second part if title contains it
+  const titleParts = content.title.includes('Organization') 
+    ? content.title.split(/Organization/i)
+    : [content.title, ''];
+  const firstPart = titleParts[0].trim() || 'Non-Governmental';
+  const hasOrganization = content.title.toLowerCase().includes('organization');
+
   return (
     <section className="bg-gray-50 py-16 px-4 md:px-16">
       <div className="max-w-7xl mx-auto">
@@ -8,9 +41,15 @@ const NGOSection: React.FC = () => {
           {/* Title Section */}
           <div className="lg:w-1/3">
             <h2 className="text-4xl md:text-5xl font-bold text-slate-800 leading-tight font-heading">
-              Non-Governmental
-              <br />
-              <span className="text-hopely-pink">Organization</span>
+              {hasOrganization ? (
+                <>
+                  {firstPart}
+                  <br />
+                  <span className="text-hopely-pink">Organization</span>
+                </>
+              ) : (
+                content.title
+              )}
             </h2>
           </div>
           
@@ -22,10 +61,7 @@ const NGOSection: React.FC = () => {
             {/* Text content */}
             <div className="lg:pl-8">
               <p className="text-gray-700 text-lg leading-relaxed">
-                Hopely supports underprivileged children across Uganda, giving them hope for a better future 
-                by providing them with access to education, food, and clothing. Our goal is to save as many 
-                lives as possible and ensure a bright future for those who are below the breadline. We envision 
-                a Uganda without hunger, illiteracy, or disease, where every child can reach their full potential.
+                {content.description}
               </p>
             </div>
           </div>

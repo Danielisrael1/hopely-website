@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Button3D from './Button3D';
+import { AppwriteService, type SiteSettings } from '../services/appwrite';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch site settings from Appwrite
+  useEffect(() => {
+    const fetchSiteSettings = async () => {
+      try {
+        const settings = await AppwriteService.getSiteSettings();
+        setSiteSettings(settings);
+      } catch (error) {
+        console.error('Failed to fetch site settings:', error);
+      }
+    };
+
+    fetchSiteSettings();
+  }, []);
+
+  // Use CMS settings or fallback
+  const settings = siteSettings || {
+    siteName: 'Hopely Uganda',
+    logo: '/logo.png',
+    primaryDonationUrl: 'https://gofund.me/266a82aa',
+    email: 'info@hopely.org',
+    phone: '+256 778000100',
+    address: 'Kampala, Uganda',
+    instagramUrl: '#',
+    facebookUrl: '#',
+    twitterUrl: '#',
+  };
 
   // Smooth scroll function for sections on the home page
   const scrollToSection = (sectionId: string) => {
@@ -77,12 +106,18 @@ const Header: React.FC = () => {
             onClick={() => navigate('/')}
             className="font-cursive flex items-center font-bold text-xl sm:text-2xl text-white z-50 hover:text-hopely-pink transition-colors duration-200"
           >
-            <img src="/logo.png" alt="Hopely Uganda Logo" className="h-10 w-10 object-contain mr-2 cursor-pointer" onClick={() => navigate('/')} />
-            Hopely Uganda
+            <img src={settings.logo} alt="Hopely Uganda Logo" className="h-10 w-10 object-contain mr-2 cursor-pointer" onClick={() => navigate('/')} />
+            {settings.siteName}
           </button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <button 
+              onClick={() => navigate('/')}
+              className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
+            >
+              Home
+            </button>
             <button 
               onClick={() => scrollToSection('what-we-do')}
               className="text-white text-sm font-medium hover:text-hopely-pink transition-colors duration-200 cursor-pointer"
@@ -101,7 +136,7 @@ const Header: React.FC = () => {
             >
               Projects
             </button>
-            <Button3D text="Donate" size="medium" variant="pink" href="https://gofund.me/266a82aa" />
+            <Button3D text="Donate" size="medium" variant="pink" href={settings.primaryDonationUrl} />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -143,8 +178,17 @@ const Header: React.FC = () => {
         }`}>
           {/* Menu Content */}
           <div className="flex flex-col h-full pt-20 pb-6 px-6">
-            {/* Navigation Links */}
-            <nav className="flex flex-col space-y-6">
+            {/* Mobile Navigation */}
+            <nav className="flex flex-col space-y-2 py-6">
+              <button 
+                onClick={() => {
+                  navigate('/');
+                  closeMenu();
+                }}
+                className="text-slate-800 font-medium text-lg py-3 border-b border-gray-100 hover:text-hopely-pink transition-colors duration-200 text-left"
+              >
+                Home
+              </button>
               <button 
                 onClick={() => {
                   scrollToSection('what-we-do');
@@ -176,7 +220,7 @@ const Header: React.FC = () => {
                 text="Donate Now" 
                 size="large" 
                 variant="pink" 
-                href="https://gofund.me/266a82aa"
+                href={settings.primaryDonationUrl}
                 className="w-full mt-4"
               />
             </nav>
@@ -185,19 +229,19 @@ const Header: React.FC = () => {
             <div className="mt-auto pt-8 border-t border-gray-100">
               <div className="text-sm text-gray-600 space-y-2">
                 <p className="font-medium text-slate-800">Get in touch</p>
-                <p>info@hopely.org</p>
-                <p>+256 778000100</p>
-                <p>Kampala, Uganda</p>
+                <p>{settings.email}</p>
+                <p>{settings.phone}</p>
+                <p>{settings.address}</p>
               </div>
               
               {/* Social Links */}
               <div className="flex space-x-4 mt-4">
-                <a href="#" className="text-gray-400 hover:text-hopely-pink transition-colors">
+                <a href={settings.instagramUrl} className="text-gray-400 hover:text-hopely-pink transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm6 1.25a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                   </svg>
                 </a>
-                <a href="#" className="text-gray-400 hover:text-hopely-pink transition-colors">
+                <a href={settings.facebookUrl} className="text-gray-400 hover:text-hopely-pink transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M22 12c0-5.522-4.477-10-10-10S2 6.478 2 12c0 4.991 3.657 9.128 8.438 9.877v-6.987h-2.54v-2.89h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.771-1.63 1.562v1.875h2.773l-.443 2.89h-2.33v6.987C18.343 21.128 22 16.991 22 12" />
                   </svg>
