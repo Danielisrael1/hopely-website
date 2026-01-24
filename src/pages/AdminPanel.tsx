@@ -56,7 +56,7 @@ const AdminDashboard: React.FC = () => {
   });
 
   // Mission items state
-  const [missionItems, setMissionItems] = useState<MissionItem[]>([]);
+  const [missionItems, setMissionItems] = useState<(MissionItem & { $id?: string })[]>([]);
 
   // NGO section state
   const [ngoSection, setNGOSection] = useState<NGOSection>({
@@ -65,10 +65,10 @@ const AdminDashboard: React.FC = () => {
   });
 
   // Info cards state
-  const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
+  const [infoCards, setInfoCards] = useState<(InfoCard & { $id?: string })[]>([]);
 
   // Team members state
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamMembers, setTeamMembers] = useState<(TeamMember & { $id?: string })[]>([]);
 
   // Load initial data
   useEffect(() => {
@@ -111,8 +111,7 @@ const AdminDashboard: React.FC = () => {
   const saveSiteSettings = async () => {
     try {
       setLoading(true);
-      // Note: In a real implementation, you'd use Appwrite updateDocument
-      // For now, we'll just show success message
+      await AppwriteService.updateSiteSettings(siteSettings);
       showMessage('Site settings saved successfully!', 'success');
     } catch (error) {
       console.error('Failed to save site settings:', error);
@@ -125,10 +124,73 @@ const AdminDashboard: React.FC = () => {
   const saveHeroContent = async () => {
     try {
       setLoading(true);
+      await AppwriteService.updateHeroContent(heroContent);
       showMessage('Hero content saved successfully!', 'success');
     } catch (error) {
       console.error('Failed to save hero content:', error);
       showMessage('Failed to save hero content', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveMissionSection = async () => {
+    try {
+      setLoading(true);
+      await AppwriteService.updateMissionSection(missionSection);
+      await AppwriteService.saveMissionItems(missionItems);
+      // Reload mission items to get updated $ids
+      const updatedItems = await AppwriteService.getMissionItems();
+      setMissionItems(updatedItems as (MissionItem & { $id?: string })[]);
+      showMessage('Mission section saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save mission section:', error);
+      showMessage('Failed to save mission section', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveNGOSection = async () => {
+    try {
+      setLoading(true);
+      await AppwriteService.updateNGOSection(ngoSection);
+      showMessage('About section saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save about section:', error);
+      showMessage('Failed to save about section', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveInfoCards = async () => {
+    try {
+      setLoading(true);
+      await AppwriteService.saveInfoCards(infoCards);
+      // Reload info cards to get updated $ids
+      const updatedCards = await AppwriteService.getInfoCards();
+      setInfoCards(updatedCards as (InfoCard & { $id?: string })[]);
+      showMessage('Info cards saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save info cards:', error);
+      showMessage('Failed to save info cards', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveTeamMembers = async () => {
+    try {
+      setLoading(true);
+      await AppwriteService.saveTeamMembers(teamMembers);
+      // Reload team members to get updated $ids
+      const updatedMembers = await AppwriteService.getTeamMembers();
+      setTeamMembers(updatedMembers as (TeamMember & { $id?: string })[]);
+      showMessage('Team members saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save team members:', error);
+      showMessage('Failed to save team members', 'error');
     } finally {
       setLoading(false);
     }
@@ -479,16 +541,11 @@ const AdminDashboard: React.FC = () => {
                       </div>
                     </div>
                     <button
-                      onClick={() => {
-                        setLoading(true);
-                        setTimeout(() => {
-                          showMessage('Mission section saved successfully!', 'success');
-                          setLoading(false);
-                        }, 1000);
-                      }}
-                      className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2"
+                      onClick={saveMissionSection}
+                      disabled={loading}
+                      className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
                     >
-                      Save Mission Section
+                      {loading ? 'Saving...' : 'Save Mission Section'}
                     </button>
                   </div>
 
@@ -647,6 +704,13 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   ))}
                 </div>
+                <button
+                  onClick={saveTeamMembers}
+                  disabled={loading}
+                  className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {loading ? 'Saving...' : 'Save Team Members'}
+                </button>
               </div>
             )}
 
@@ -674,16 +738,11 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    setLoading(true);
-                    setTimeout(() => {
-                      showMessage('About section saved successfully!', 'success');
-                      setLoading(false);
-                    }, 1000);
-                  }}
-                  className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2"
+                  onClick={saveNGOSection}
+                  disabled={loading}
+                  className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
                 >
-                  Save About Section
+                  {loading ? 'Saving...' : 'Save About Section'}
                 </button>
               </div>
             )}
@@ -792,6 +851,13 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   ))}
                 </div>
+                <button
+                  onClick={saveInfoCards}
+                  disabled={loading}
+                  className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {loading ? 'Saving...' : 'Save Info Cards'}
+                </button>
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@
  * Handles all communication with Appwrite backend
  */
 
-import { Client, Databases } from 'appwrite';
+import { Client, Databases, ID, Query } from 'appwrite';
 
 // Initialize Appwrite client
 const client = new Client()
@@ -229,6 +229,262 @@ export class AppwriteService {
     } catch (error) {
       console.error('Error fetching team members:', error);
       return [];
+    }
+  }
+
+  // ==================== UPDATE FUNCTIONS ====================
+
+  // Update site settings
+  static async updateSiteSettings(data: SiteSettings): Promise<SiteSettings> {
+    try {
+      // Try to update existing document
+      const response = await databases.updateDocument(
+        DATABASE_ID,
+        'site_settings',
+        'site_settings',
+        data
+      );
+      return response as unknown as SiteSettings;
+    } catch (error: unknown) {
+      // If document doesn't exist, create it
+      if (error && typeof error === 'object' && 'code' in error && error.code === 404) {
+        const response = await databases.createDocument(
+          DATABASE_ID,
+          'site_settings',
+          'site_settings',
+          data
+        );
+        return response as unknown as SiteSettings;
+      }
+      throw error;
+    }
+  }
+
+  // Update hero content
+  static async updateHeroContent(data: HeroContent): Promise<HeroContent> {
+    try {
+      const response = await databases.updateDocument(
+        DATABASE_ID,
+        'hero_content',
+        'hero_content',
+        data
+      );
+      return response as unknown as HeroContent;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 404) {
+        const response = await databases.createDocument(
+          DATABASE_ID,
+          'hero_content',
+          'hero_content',
+          data
+        );
+        return response as unknown as HeroContent;
+      }
+      throw error;
+    }
+  }
+
+  // Update mission section
+  static async updateMissionSection(data: MissionSection): Promise<MissionSection> {
+    try {
+      const response = await databases.updateDocument(
+        DATABASE_ID,
+        'mission_section',
+        'mission_section',
+        data
+      );
+      return response as unknown as MissionSection;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 404) {
+        const response = await databases.createDocument(
+          DATABASE_ID,
+          'mission_section',
+          'mission_section',
+          data
+        );
+        return response as unknown as MissionSection;
+      }
+      throw error;
+    }
+  }
+
+  // Update NGO section
+  static async updateNGOSection(data: NGOSection): Promise<NGOSection> {
+    try {
+      const response = await databases.updateDocument(
+        DATABASE_ID,
+        'ngo_section',
+        'ngo_section',
+        data
+      );
+      return response as unknown as NGOSection;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 404) {
+        const response = await databases.createDocument(
+          DATABASE_ID,
+          'ngo_section',
+          'ngo_section',
+          data
+        );
+        return response as unknown as NGOSection;
+      }
+      throw error;
+    }
+  }
+
+  // ==================== MISSION ITEMS CRUD ====================
+
+  // Create mission item
+  static async createMissionItem(data: MissionItem): Promise<MissionItem & { $id: string }> {
+    const response = await databases.createDocument(
+      DATABASE_ID,
+      'mission_items',
+      ID.unique(),
+      data
+    );
+    return response as unknown as MissionItem & { $id: string };
+  }
+
+  // Update mission item
+  static async updateMissionItem(id: string, data: Partial<MissionItem>): Promise<MissionItem> {
+    const response = await databases.updateDocument(
+      DATABASE_ID,
+      'mission_items',
+      id,
+      data
+    );
+    return response as unknown as MissionItem;
+  }
+
+  // Delete mission item
+  static async deleteMissionItem(id: string): Promise<void> {
+    await databases.deleteDocument(DATABASE_ID, 'mission_items', id);
+  }
+
+  // Save all mission items (handles create/update/delete)
+  static async saveMissionItems(items: (MissionItem & { $id?: string })[]): Promise<void> {
+    // Get existing items
+    const existingResponse = await databases.listDocuments(DATABASE_ID, 'mission_items');
+    const existingIds = new Set(existingResponse.documents.map(doc => doc.$id));
+    const newIds = new Set(items.filter(item => item.$id).map(item => item.$id));
+
+    // Delete items that are no longer in the list
+    for (const doc of existingResponse.documents) {
+      if (!newIds.has(doc.$id)) {
+        await databases.deleteDocument(DATABASE_ID, 'mission_items', doc.$id);
+      }
+    }
+
+    // Update or create items
+    for (const item of items) {
+      const { $id, ...data } = item;
+      if ($id && existingIds.has($id)) {
+        await databases.updateDocument(DATABASE_ID, 'mission_items', $id, data);
+      } else {
+        await databases.createDocument(DATABASE_ID, 'mission_items', ID.unique(), data);
+      }
+    }
+  }
+
+  // ==================== INFO CARDS CRUD ====================
+
+  // Create info card
+  static async createInfoCard(data: InfoCard): Promise<InfoCard & { $id: string }> {
+    const response = await databases.createDocument(
+      DATABASE_ID,
+      'info_cards',
+      ID.unique(),
+      data
+    );
+    return response as unknown as InfoCard & { $id: string };
+  }
+
+  // Update info card
+  static async updateInfoCard(id: string, data: Partial<InfoCard>): Promise<InfoCard> {
+    const response = await databases.updateDocument(
+      DATABASE_ID,
+      'info_cards',
+      id,
+      data
+    );
+    return response as unknown as InfoCard;
+  }
+
+  // Delete info card
+  static async deleteInfoCard(id: string): Promise<void> {
+    await databases.deleteDocument(DATABASE_ID, 'info_cards', id);
+  }
+
+  // Save all info cards
+  static async saveInfoCards(items: (InfoCard & { $id?: string })[]): Promise<void> {
+    const existingResponse = await databases.listDocuments(DATABASE_ID, 'info_cards');
+    const existingIds = new Set(existingResponse.documents.map(doc => doc.$id));
+    const newIds = new Set(items.filter(item => item.$id).map(item => item.$id));
+
+    for (const doc of existingResponse.documents) {
+      if (!newIds.has(doc.$id)) {
+        await databases.deleteDocument(DATABASE_ID, 'info_cards', doc.$id);
+      }
+    }
+
+    for (const item of items) {
+      const { $id, ...data } = item;
+      if ($id && existingIds.has($id)) {
+        await databases.updateDocument(DATABASE_ID, 'info_cards', $id, data);
+      } else {
+        await databases.createDocument(DATABASE_ID, 'info_cards', ID.unique(), data);
+      }
+    }
+  }
+
+  // ==================== TEAM MEMBERS CRUD ====================
+
+  // Create team member
+  static async createTeamMember(data: TeamMember): Promise<TeamMember & { $id: string }> {
+    const response = await databases.createDocument(
+      DATABASE_ID,
+      'team_members',
+      ID.unique(),
+      data
+    );
+    return response as unknown as TeamMember & { $id: string };
+  }
+
+  // Update team member
+  static async updateTeamMember(id: string, data: Partial<TeamMember>): Promise<TeamMember> {
+    const response = await databases.updateDocument(
+      DATABASE_ID,
+      'team_members',
+      id,
+      data
+    );
+    return response as unknown as TeamMember;
+  }
+
+  // Delete team member
+  static async deleteTeamMember(id: string): Promise<void> {
+    await databases.deleteDocument(DATABASE_ID, 'team_members', id);
+  }
+
+  // Save all team members
+  static async saveTeamMembers(items: (TeamMember & { $id?: string })[]): Promise<void> {
+    const existingResponse = await databases.listDocuments(DATABASE_ID, 'team_members');
+    const existingIds = new Set(existingResponse.documents.map(doc => doc.$id));
+    const newIds = new Set(items.filter(item => item.$id).map(item => item.$id));
+
+    for (const doc of existingResponse.documents) {
+      if (!newIds.has(doc.$id)) {
+        await databases.deleteDocument(DATABASE_ID, 'team_members', doc.$id);
+      }
+    }
+
+    for (const item of items) {
+      const { $id, ...data } = item;
+      if ($id && existingIds.has($id)) {
+        await databases.updateDocument(DATABASE_ID, 'team_members', $id, data);
+      } else {
+        await databases.createDocument(DATABASE_ID, 'team_members', ID.unique(), data);
+      }
     }
   }
 }
