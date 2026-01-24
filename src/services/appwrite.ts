@@ -82,6 +82,12 @@ export interface TeamMember {
   order: number;
 }
 
+export interface NoMoreItem {
+  category: string;
+  description: string;
+  order: number;
+}
+
 // Service functions
 export class AppwriteService {
   // Get site settings
@@ -233,6 +239,25 @@ export class AppwriteService {
     } catch (error) {
       console.error('Error fetching team members:', error);
       return [];
+    }
+  }
+
+  // Get no more items
+  static async getNoMoreItems(): Promise<NoMoreItem[]> {
+    try {
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        'no_more_items'
+      );
+      return response.documents.map(doc => doc as unknown as NoMoreItem).sort((a, b) => a.order - b.order);
+    } catch (error) {
+      console.error('Error fetching no more items:', error);
+      // Return default values if collection doesn't exist
+      return [
+        { category: "hunger", description: "Aid projects are empowering the vulnerable, ensuring no child goes hungry. Your donation helps us provide food and nutrition.", order: 1 },
+        { category: "illiteracy", description: "Education for all. Regardless of gender or background, we support children to stay in school and succeed.", order: 2 },
+        { category: "disease", description: "Healthcare prevents disease and enables children to thrive. We provide access to medical care and health education.", order: 3 }
+      ];
     }
   }
 
@@ -497,6 +522,35 @@ export class AppwriteService {
         console.log('Creating new document:', data);
         await databases.createDocument(DATABASE_ID, 'team_members', ID.unique(), data);
       }
+    }
+  }
+
+  // ==================== NO MORE ITEMS CRUD ====================
+
+  // Save all no more items
+  static async saveNoMoreItems(items: (NoMoreItem & { $id?: string })[]): Promise<void> {
+    try {
+      const existingResponse = await databases.listDocuments(DATABASE_ID, 'no_more_items');
+      const existingIds = new Set(existingResponse.documents.map(doc => doc.$id));
+      const newIds = new Set(items.filter(item => item.$id).map(item => item.$id));
+
+      for (const doc of existingResponse.documents) {
+        if (!newIds.has(doc.$id)) {
+          await databases.deleteDocument(DATABASE_ID, 'no_more_items', doc.$id);
+        }
+      }
+
+      for (const item of items) {
+        const { $id, ...data } = item;
+        if ($id && existingIds.has($id)) {
+          await databases.updateDocument(DATABASE_ID, 'no_more_items', $id, data);
+        } else {
+          await databases.createDocument(DATABASE_ID, 'no_more_items', ID.unique(), data);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving no more items:', error);
+      throw error;
     }
   }
 

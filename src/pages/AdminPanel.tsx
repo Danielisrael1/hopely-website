@@ -6,13 +6,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { AppwriteService, type SiteSettings, type HeroContent, type MissionSection, type MissionItem, type NGOSection, type InfoCard, type TeamMember } from '../services/appwrite';
+import { AppwriteService, type SiteSettings, type HeroContent, type MissionSection, type MissionItem, type NGOSection, type InfoCard, type TeamMember, type NoMoreItem } from '../services/appwrite';
 import ImageUpload from '../components/ImageUpload';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'site' | 'hero' | 'mission' | 'ngo' | 'info-cards' | 'team'>('site');
+  const [activeTab, setActiveTab] = useState<'site' | 'hero' | 'mission' | 'ngo' | 'info-cards' | 'team' | 'nomore'>('site');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -71,6 +71,9 @@ const AdminDashboard: React.FC = () => {
   // Team members state
   const [teamMembers, setTeamMembers] = useState<(TeamMember & { $id?: string })[]>([]);
 
+  // No More items state
+  const [noMoreItems, setNoMoreItems] = useState<(NoMoreItem & { $id?: string })[]>([]);
+
   // Load initial data
   useEffect(() => {
     loadAllData();
@@ -79,7 +82,7 @@ const AdminDashboard: React.FC = () => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [site, hero, mission, items, ngo, cards, team] = await Promise.all([
+      const [site, hero, mission, items, ngo, cards, team, nomore] = await Promise.all([
         AppwriteService.getSiteSettings(),
         AppwriteService.getHeroContent(),
         AppwriteService.getMissionSection(),
@@ -87,6 +90,7 @@ const AdminDashboard: React.FC = () => {
         AppwriteService.getNGOSection(),
         AppwriteService.getInfoCards(),
         AppwriteService.getTeamMembers(),
+        AppwriteService.getNoMoreItems(),
       ]);
 
       setSiteSettings(site);
@@ -96,6 +100,7 @@ const AdminDashboard: React.FC = () => {
       setNGOSection(ngo);
       setInfoCards(cards);
       setTeamMembers(team);
+      setNoMoreItems(nomore as (NoMoreItem & { $id?: string })[]);
     } catch (error) {
       console.error('Failed to load data:', error);
       setMessage('Failed to load data');
@@ -197,6 +202,41 @@ const AdminDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const saveNoMoreItems = async () => {
+    try {
+      setLoading(true);
+      await AppwriteService.saveNoMoreItems(noMoreItems);
+      // Reload items to get updated $ids
+      const updatedItems = await AppwriteService.getNoMoreItems();
+      setNoMoreItems(updatedItems as (NoMoreItem & { $id?: string })[]);
+      showMessage('No More section saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save no more items:', error);
+      showMessage('Failed to save no more items', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addNoMoreItem = () => {
+    const newItem: NoMoreItem = {
+      category: '',
+      description: '',
+      order: noMoreItems.length + 1,
+    };
+    setNoMoreItems([...noMoreItems, newItem]);
+  };
+
+  const updateNoMoreItem = (index: number, field: keyof NoMoreItem, value: string | number) => {
+    const updated = [...noMoreItems];
+    updated[index] = { ...updated[index], [field]: value };
+    setNoMoreItems(updated);
+  };
+
+  const removeNoMoreItem = (index: number) => {
+    setNoMoreItems(noMoreItems.filter((_, i) => i !== index));
   };
 
   const addMissionItem = () => {
@@ -311,6 +351,7 @@ const AdminDashboard: React.FC = () => {
                   { id: 'ngo', label: 'About' },
                   { id: 'info-cards', label: 'Info Cards' },
                   { id: 'team', label: 'Team' },
+                  { id: 'nomore', label: 'No More' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -801,28 +842,34 @@ const AdminDashboard: React.FC = () => {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">Background Image</label>
-                          <input
-                            type="text"
-                            value={card.backgroundImage}
-                            onChange={(e) => {
+                          <ImageUpload
+                            currentImage={card.backgroundImage}
+                            onImageUploaded={(url) => {
                               const updated = [...infoCards];
-                              updated[index] = { ...updated[index], backgroundImage: e.target.value };
+                              updated[index] = { ...updated[index], backgroundImage: url };
                               setInfoCards(updated);
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                            onImageRemoved={() => {
+                              const updated = [...infoCards];
+                              updated[index] = { ...updated[index], backgroundImage: '' };
+                              setInfoCards(updated);
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">Icon Image</label>
-                          <input
-                            type="text"
-                            value={card.iconImage}
-                            onChange={(e) => {
+                          <ImageUpload
+                            currentImage={card.iconImage}
+                            onImageUploaded={(url) => {
                               const updated = [...infoCards];
-                              updated[index] = { ...updated[index], iconImage: e.target.value };
+                              updated[index] = { ...updated[index], iconImage: url };
                               setInfoCards(updated);
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                            onImageRemoved={() => {
+                              const updated = [...infoCards];
+                              updated[index] = { ...updated[index], iconImage: '' };
+                              setInfoCards(updated);
+                            }}
                           />
                         </div>
                         <div>
@@ -859,6 +906,76 @@ const AdminDashboard: React.FC = () => {
                   className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
                 >
                   {loading ? 'Saving...' : 'Save Info Cards'}
+                </button>
+              </div>
+            )}
+
+            {/* No More Section Tab */}
+            {!loading && activeTab === 'nomore' && (
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h2 className="text-xl font-semibold">No More Section</h2>
+                    <p className="text-sm text-gray-500">Edit the "No more hunger/illiteracy/disease" section items</p>
+                  </div>
+                  <button
+                    onClick={addNoMoreItem}
+                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    Add Item
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {noMoreItems.map((item, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Category (e.g., "hunger", "illiteracy")</label>
+                          <input
+                            type="text"
+                            value={item.category}
+                            onChange={(e) => updateNoMoreItem(index, 'category', e.target.value)}
+                            placeholder="hunger"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Order</label>
+                          <input
+                            type="number"
+                            value={item.order}
+                            onChange={(e) => updateNoMoreItem(index, 'order', parseInt(e.target.value) || 0)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                          <textarea
+                            value={item.description}
+                            onChange={(e) => updateNoMoreItem(index, 'description', e.target.value)}
+                            rows={3}
+                            placeholder="Aid projects are empowering the vulnerable..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 flex justify-end">
+                        <button
+                          onClick={() => removeNoMoreItem(index)}
+                          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={saveNoMoreItems}
+                  disabled={loading}
+                  className="mt-6 bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {loading ? 'Saving...' : 'Save No More Section'}
                 </button>
               </div>
             )}

@@ -113,6 +113,18 @@
         {"key": "email", "type": "string", "size": 100, "required": false, "array": false},
         {"key": "order", "type": "integer", "required": true, "array": false, "min": 0, "max": 9999}
       ]
+    },
+    {
+      "name": "no_more_items",
+      "id": "no_more_items",
+      "enabled": true,
+      "permissions": ["read(\"any\")"],
+      "documentSecurity": false,
+      "attributes": [
+        {"key": "category", "type": "string", "size": 100, "required": true, "array": false},
+        {"key": "description", "type": "string", "size": 500, "required": true, "array": false},
+        {"key": "order", "type": "integer", "required": true, "array": false, "min": 0, "max": 9999}
+      ]
     }
   ]
 }
