@@ -15,6 +15,7 @@ const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'site' | 'hero' | 'mission' | 'ngo' | 'info-cards' | 'team' | 'nomore'>('site');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'success' | 'error'>('success');
 
   const handleLogout = async () => {
     try {
@@ -103,6 +104,7 @@ const AdminDashboard: React.FC = () => {
       setNoMoreItems(nomore as (NoMoreItem & { $id?: string })[]);
     } catch (error) {
       console.error('Failed to load data:', error);
+      setMessageType('error');
       setMessage('Failed to load data');
     } finally {
       setLoading(false);
@@ -110,6 +112,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   const showMessage = (msg: string, type: 'success' | 'error' = 'success') => {
+    setMessageType(type);
     setMessage(msg);
     setTimeout(() => setMessage(''), 3000);
   };
@@ -333,7 +336,7 @@ const AdminDashboard: React.FC = () => {
         {/* Message */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${
-            message.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            messageType === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
           }`}>
             {message}
           </div>

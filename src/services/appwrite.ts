@@ -3,7 +3,7 @@
  * Handles all communication with Appwrite backend
  */
 
-import { Client, Databases, Storage, ID, Query } from 'appwrite';
+import { Client, Databases, Storage, ID } from 'appwrite';
 
 // Initialize Appwrite client
 const client = new Client()
@@ -576,10 +576,9 @@ export class AppwriteService {
         100 // quality
       );
       
-      // Convert URL object to string properly
-      const urlString = fileUrl.href || fileUrl.toString();
-      console.log('Uploaded image URL:', urlString);
-      return urlString;
+      // Appwrite SDK v18+ returns the preview URL as a string
+      console.log('Uploaded image URL:', fileUrl);
+      return fileUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
@@ -588,8 +587,7 @@ export class AppwriteService {
 
   // Get file view URL for a file ID
   static getFileViewUrl(fileId: string): string {
-    const url = storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 400, 400);
-    return url.href || url.toString();
+    return storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 400, 400);
   }
 
   // Delete an image from Appwrite Storage
