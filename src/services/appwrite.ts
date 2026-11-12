@@ -5,25 +5,33 @@
 
 import { Client, Databases, Storage, ID } from 'appwrite';
 
+const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1';
+const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID || '';
+
 // Initialize Appwrite client
 const client = new Client()
-  .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1')
-  .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID || '');
+  .setEndpoint(ENDPOINT)
+  .setProject(PROJECT_ID);
 
 const databases = new Databases(client);
 const storage = new Storage(client);
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID || '';
 const STORAGE_BUCKET_ID = import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID || 'images';
 
-// Appwrite's free plan blocks image transformations: every /preview URL returns
-// 403 "storage_image_transformations_blocked". Serve the original file via /view.
+// Image links saved in the CMS can be wrong in two ways:
+// - /preview links: Appwrite's free plan blocks image transformations (403
+//   "storage_image_transformations_blocked"), so serve the original via /view.
+// - links to the Appwrite project the data was migrated from: the migration kept
+//   bucket and file IDs, so files in our bucket are loaded from this project instead.
 export function toViewUrl(url: string): string {
-  if (!url || !url.includes('/storage/buckets/') || !/\/preview(\?|$)/.test(url)) return url;
-  const u = new URL(url);
-  u.pathname = u.pathname.replace(/\/preview$/, '/view');
-  const project = u.searchParams.get('project');
-  u.search = project ? `?project=${project}` : '';
-  return u.toString();
+  const m = url?.match(/^(https?:\/\/[^?#]+\/storage\/buckets\/([^/]+)\/files\/[^/?#]+)\/(?:view|preview)(?:[?#]|$)/);
+  if (!m) return url;
+  const [, fileBase, bucketId] = m;
+  if (bucketId === STORAGE_BUCKET_ID && PROJECT_ID) {
+    return `${ENDPOINT}${fileBase.slice(fileBase.indexOf('/storage/'))}/view?project=${PROJECT_ID}`;
+  }
+  const project = new URL(url).searchParams.get('project');
+  return `${fileBase}/view${project ? `?project=${project}` : ''}`;
 }
 
 // Types for our data
@@ -136,7 +144,8 @@ export class AppwriteService {
         'hero_content',
         'hero_content'
       );
-      return response as unknown as HeroContent;
+      const hero = response as unknown as HeroContent;
+      return { ...hero, backgroundImage: toViewUrl(hero.backgroundImage) };
     } catch (error) {
       console.error('Error fetching hero content:', error);
       return {
@@ -157,7 +166,8 @@ export class AppwriteService {
         'mission_section',
         'mission_section'
       );
-      return response as unknown as MissionSection;
+      const mission = response as unknown as MissionSection;
+      return { ...mission, missionImage: toViewUrl(mission.missionImage) };
     } catch (error) {
       console.error('Error fetching mission section:', error);
       return {
