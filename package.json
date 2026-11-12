@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "setup:no-more": "node scripts/create-no-more-collection.js"
+    "setup:no-more": "node scripts/create-no-more-collection.js",
+    "setup:hope-kids": "node scripts/create-hope-kids-collection.js"
   },
   "dependencies": {
     "@types/node": "^25.0.9",

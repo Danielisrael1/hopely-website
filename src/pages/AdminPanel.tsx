@@ -6,13 +6,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { AppwriteService, type SiteSettings, type HeroContent, type MissionSection, type MissionItem, type NGOSection, type InfoCard, type TeamMember, type NoMoreItem } from '../services/appwrite';
+import { AppwriteService, type SiteSettings, type HeroContent, type MissionSection, type MissionItem, type NGOSection, type InfoCard, type TeamMember, type NoMoreItem, type HopeKid } from '../services/appwrite';
 import ImageUpload from '../components/ImageUpload';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'site' | 'hero' | 'mission' | 'ngo' | 'info-cards' | 'team' | 'nomore'>('site');
+  const [activeTab, setActiveTab] = useState<'site' | 'hero' | 'mission' | 'ngo' | 'info-cards' | 'team' | 'nomore' | 'hopekids'>('site');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
@@ -75,6 +75,10 @@ const AdminDashboard: React.FC = () => {
   // No More items state
   const [noMoreItems, setNoMoreItems] = useState<(NoMoreItem & { $id?: string })[]>([]);
 
+  // HopeKids state (sponsor a child carousel)
+  const [hopeKids, setHopeKids] = useState<(HopeKid & { $id?: string })[]>([]);
+  const [hopeKidsError, setHopeKidsError] = useState('');
+
   // Load initial data
   useEffect(() => {
     loadAllData();
@@ -83,7 +87,7 @@ const AdminDashboard: React.FC = () => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [site, hero, mission, items, ngo, cards, team, nomore] = await Promise.all([
+      const [site, hero, mission, items, ngo, cards, team, nomore, kids] = await Promise.all([
         AppwriteService.getSiteSettings(),
         AppwriteService.getHeroContent(),
         AppwriteService.getMissionSection(),
@@ -92,6 +96,7 @@ const AdminDashboard: React.FC = () => {
         AppwriteService.getInfoCards(),
         AppwriteService.getTeamMembers(),
         AppwriteService.getNoMoreItems(),
+        AppwriteService.getHopeKids(),
       ]);
 
       setSiteSettings(site);
@@ -102,6 +107,7 @@ const AdminDashboard: React.FC = () => {
       setInfoCards(cards);
       setTeamMembers(team);
       setNoMoreItems(nomore as (NoMoreItem & { $id?: string })[]);
+      setHopeKids(kids);
     } catch (error) {
       console.error('Failed to load data:', error);
       setMessageType('error');
@@ -242,6 +248,50 @@ const AdminDashboard: React.FC = () => {
     setNoMoreItems(noMoreItems.filter((_, i) => i !== index));
   };
 
+  const saveHopeKids = async () => {
+    // Appwrite requires these fields, so catch gaps here with a readable message
+    const incomplete = hopeKids.findIndex(kid => !kid.name.trim() || !kid.description.trim() || !kid.image);
+    if (incomplete !== -1) {
+      setHopeKidsError(`HopeKid #${incomplete + 1} needs a name, a photo and a story before you can save.`);
+      return;
+    }
+    setHopeKidsError('');
+    try {
+      setLoading(true);
+      await AppwriteService.saveHopeKids(hopeKids);
+      // Reload to get the $ids of newly created kids
+      setHopeKids(await AppwriteService.getHopeKids());
+      showMessage('HopeKids saved successfully!', 'success');
+    } catch (error) {
+      console.error('Failed to save HopeKids:', error);
+      showMessage('Failed to save HopeKids', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addHopeKid = () => {
+    const newKid: HopeKid = {
+      name: '',
+      age: 0,
+      image: '',
+      description: '',
+      additionalInfo: '',
+      order: hopeKids.length + 1,
+    };
+    setHopeKids([...hopeKids, newKid]);
+  };
+
+  const updateHopeKid = (index: number, field: keyof HopeKid, value: string | number) => {
+    const updated = [...hopeKids];
+    updated[index] = { ...updated[index], [field]: value };
+    setHopeKids(updated);
+  };
+
+  const removeHopeKid = (index: number) => {
+    setHopeKids(hopeKids.filter((_, i) => i !== index));
+  };
+
   const addMissionItem = () => {
     const newItem: MissionItem = {
       text: '',
@@ -355,6 +405,7 @@ const AdminDashboard: React.FC = () => {
                   { id: 'info-cards', label: 'Info Cards' },
                   { id: 'team', label: 'Team' },
                   { id: 'nomore', label: 'No More' },
+                  { id: 'hopekids', label: 'HopeKids' },
                 ] as const).map((tab) => (
                   <button
                     key={tab.id}
@@ -980,6 +1031,124 @@ const AdminDashboard: React.FC = () => {
                 >
                   {loading ? 'Saving...' : 'Save No More Section'}
                 </button>
+              </div>
+            )}
+
+            {/* HopeKids Tab */}
+            {!loading && activeTab === 'hopekids' && (
+              <div>
+                <div className="flex justify-between items-center gap-4 mb-4">
+                  <div>
+                    <h2 className="text-xl font-semibold">HopeKids</h2>
+                    <p className="text-sm text-gray-500">The children shown in the "Sponsor a child" carousel on the home page</p>
+                  </div>
+                  <button
+                    onClick={addHopeKid}
+                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 whitespace-nowrap"
+                  >
+                    Add HopeKid
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {hopeKids.map((kid, index) => (
+                    <div key={kid.$id ?? `new-${index}`} className="border border-gray-200 rounded-lg p-4">
+                      <p className="text-sm font-semibold text-gray-500 mb-4">
+                        HopeKid #{index + 1}{kid.name ? ` · ${kid.name}` : ''}
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label htmlFor={`hopekid-name-${index}`} className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                          <input
+                            id={`hopekid-name-${index}`}
+                            type="text"
+                            value={kid.name}
+                            onChange={(e) => updateHopeKid(index, 'name', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor={`hopekid-age-${index}`} className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                          <input
+                            id={`hopekid-age-${index}`}
+                            type="number"
+                            min={0}
+                            max={25}
+                            value={kid.age}
+                            onChange={(e) => updateHopeKid(index, 'age', parseInt(e.target.value) || 0)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor={`hopekid-order-${index}`} className="block text-sm font-medium text-gray-700 mb-2">Order in carousel</label>
+                          <input
+                            id={`hopekid-order-${index}`}
+                            type="number"
+                            min={0}
+                            value={kid.order}
+                            onChange={(e) => updateHopeKid(index, 'order', parseInt(e.target.value) || 0)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <ImageUpload
+                            label="Photo"
+                            currentImage={kid.image}
+                            onImageUploaded={(url) => updateHopeKid(index, 'image', url)}
+                            onImageRemoved={() => updateHopeKid(index, 'image', '')}
+                          />
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <label htmlFor={`hopekid-story-${index}`} className="block text-sm font-medium text-gray-700 mb-2">Story</label>
+                          <textarea
+                            id={`hopekid-story-${index}`}
+                            value={kid.description}
+                            onChange={(e) => updateHopeKid(index, 'description', e.target.value)}
+                            rows={4}
+                            maxLength={2000}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <label htmlFor={`hopekid-appeal-${index}`} className="block text-sm font-medium text-gray-700 mb-2">Sponsor appeal (optional, smaller text under the story)</label>
+                          <textarea
+                            id={`hopekid-appeal-${index}`}
+                            value={kid.additionalInfo ?? ''}
+                            onChange={(e) => updateHopeKid(index, 'additionalInfo', e.target.value)}
+                            rows={2}
+                            maxLength={1000}
+                            placeholder="Become a sponsor parent to ..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-hopely-pink focus:border-hopely-pink"
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 flex justify-end">
+                        <button
+                          onClick={() => removeHopeKid(index)}
+                          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {hopeKids.length === 0 && (
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
+                      <p>No HopeKids yet. Click "Add HopeKid" to add the first child. The carousel stays hidden on the site until there is one.</p>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-6 flex flex-wrap items-center gap-4">
+                  <button
+                    onClick={saveHopeKids}
+                    disabled={loading}
+                    className="bg-hopely-pink text-white px-6 py-2 rounded-md hover:bg-hopely-pink-dark focus:outline-none focus:ring-2 focus:ring-hopely-pink focus:ring-offset-2 disabled:opacity-50"
+                  >
+                    {loading ? 'Saving...' : 'Save HopeKids'}
+                  </button>
+                  {hopeKidsError && (
+                    <p role="alert" className="text-sm text-red-700">{hopeKidsError}</p>
+                  )}
+                </div>
               </div>
             )}
           </div>

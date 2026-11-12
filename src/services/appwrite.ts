@@ -3,7 +3,7 @@
  * Handles all communication with Appwrite backend
  */
 
-import { Client, Databases, Storage, ID } from 'appwrite';
+import { Client, Databases, Storage, ID, Query } from 'appwrite';
 
 const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1';
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID || '';
@@ -106,6 +106,47 @@ export interface NoMoreItem {
   description: string;
   order: number;
 }
+
+// A child in the "Sponsor a child" carousel
+export interface HopeKid {
+  name: string;
+  age: number;
+  image: string;
+  description: string;
+  additionalInfo?: string;
+  order: number;
+}
+
+const HOPE_KIDS = 'hope_kids';
+
+// Shown on the site until the hope_kids collection exists in Appwrite
+// (scripts/create-hope-kids-collection.js creates it and copies these in).
+const DEFAULT_HOPE_KIDS: HopeKid[] = [
+  {
+    name: 'Kimuli Joseph',
+    age: 16,
+    image: '/img/jose.jpg',
+    description: 'Joseph, 16 years is the eldest among his 3 siblings. abandon by the father he had challenges going to school since it was his mother carrying the family alone taking care.',
+    additionalInfo: 'with your sponsorship, he can go to a better school, acquire better education and break the poverty cycle in the family hence, brighter future Become a sponsor parent to Joseph.',
+    order: 1,
+  },
+  {
+    name: 'Nakato Sarah',
+    age: 12,
+    image: '/img/alisha.jpg',
+    description: 'Sarah is a bright young girl who dreams of becoming a doctor. She lost her parents in an accident and now lives with her grandmother.',
+    additionalInfo: 'Your sponsorship will help Sarah continue her education and provide her with the basic necessities she needs to thrive and achieve her dreams.',
+    order: 2,
+  },
+  {
+    name: 'Ssaku Parvin Darious |S4',
+    age: 14,
+    image: '/img/pervin.jpg',
+    description: 'Parvin ,17 years at his young age, he couldn’t make it to school and was stuckUsed to vendor clothes to earn a living with his mother. Open not lost. He continued in this line of business, but it couldn’t generate enough income to take him to school.With your generous sponsorship, Parvin can go back to school so that he achieves his goals and dreams in lif.',
+    additionalInfo: 'Become a sponsor parent to Parvin.',
+    order: 3,
+  },
+];
 
 // Service functions
 export class AppwriteService {
@@ -285,6 +326,30 @@ export class AppwriteService {
         { category: "illiteracy", description: "Education for all. Regardless of gender or background, we support children to stay in school and succeed.", order: 2 },
         { category: "disease", description: "Healthcare prevents disease and enables children to thrive. We provide access to medical care and health education.", order: 3 }
       ];
+    }
+  }
+
+  // Get HopeKids (sponsor a child carousel)
+  static async getHopeKids(): Promise<(HopeKid & { $id?: string })[]> {
+    try {
+      const response = await databases.listDocuments(DATABASE_ID, HOPE_KIDS, [Query.limit(100)]);
+      return response.documents
+        .map(doc => {
+          const kid = doc as unknown as HopeKid & { $id: string };
+          return {
+            $id: kid.$id,
+            name: kid.name,
+            age: kid.age,
+            image: toViewUrl(kid.image),
+            description: kid.description,
+            additionalInfo: kid.additionalInfo ?? '',
+            order: kid.order,
+          };
+        })
+        .sort((a, b) => a.order - b.order);
+    } catch (error) {
+      console.error('Error fetching HopeKids:', error);
+      return DEFAULT_HOPE_KIDS;
     }
   }
 
@@ -578,6 +643,31 @@ export class AppwriteService {
     } catch (error) {
       console.error('Error saving no more items:', error);
       throw error;
+    }
+  }
+
+  // ==================== HOPEKIDS CRUD ====================
+
+  // Save all HopeKids: deletes removed kids, updates existing ones, creates new ones
+  static async saveHopeKids(kids: (HopeKid & { $id?: string })[]): Promise<void> {
+    const existing = await databases.listDocuments(DATABASE_ID, HOPE_KIDS, [Query.limit(100)]);
+    const existingIds = new Set(existing.documents.map(doc => doc.$id));
+    const keptIds = new Set(kids.map(kid => kid.$id).filter(Boolean));
+
+    for (const doc of existing.documents) {
+      if (!keptIds.has(doc.$id)) {
+        await databases.deleteDocument(DATABASE_ID, HOPE_KIDS, doc.$id);
+      }
+    }
+
+    for (const { $id, name, age, image, description, additionalInfo, order } of kids) {
+      // Only the collection's own fields, not the $-system fields Appwrite returned
+      const data = { name, age, image, description, additionalInfo: additionalInfo ?? '', order };
+      if ($id && existingIds.has($id)) {
+        await databases.updateDocument(DATABASE_ID, HOPE_KIDS, $id, data);
+      } else {
+        await databases.createDocument(DATABASE_ID, HOPE_KIDS, ID.unique(), data);
+      }
     }
   }
 
