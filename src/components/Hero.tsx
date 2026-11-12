@@ -46,7 +46,7 @@ const Hero: React.FC = () => {
   const content = heroContent || FALLBACK_HERO;
 
   return (
-    <section className="relative h-[100svh] flex flex-col justify-center items-center overflow-hidden bg-slate-800">
+    <section className="relative hero-screen overflow-hidden bg-slate-800">
       {/* Parallax Background (plain parallax + blur loading) */}
       <div ref={wrapperRef} className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {/* Wait for the CMS answer so the fallback photo isn't downloaded and then replaced */}
@@ -66,8 +66,8 @@ const Hero: React.FC = () => {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4">
+      {/* Content: centred in the part of the screen visible on load, clear of the fixed header */}
+      <div className="relative z-10 hero-content flex flex-col items-center justify-center text-center px-4 pt-20 pb-10">
         <h1 className="text-5xl md:text-7xl font-heading font-bold text-white drop-shadow-2xl mb-6 animate-fade-in">
           {content.title}
         </h1>

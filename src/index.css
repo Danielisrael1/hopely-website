@@ -4,8 +4,29 @@
 
 /* Base styles */
 @layer base {
+  /* Dark canvas so pulling past the top (dark hero) or bottom (dark footer) doesn't flash white */
+  html {
+    background-color: #1e293b;
+  }
   body {
     font-family: 'Montserrat', sans-serif;
+    background-color: #fff;
+  }
+}
+
+/* Full-screen hero on phones. Mobile browsers have two fixed viewport heights:
+   svh (toolbars showing) and lvh (toolbars hidden). The hero background uses lvh,
+   so it also sits behind see-through toolbars and leaves no gap when they slide
+   away; the content is centred in svh, the part of the screen visible on load.
+   100vh is the fallback for browsers without these units. */
+@layer components {
+  .hero-screen {
+    min-height: 100vh;
+    min-height: 100lvh;
+  }
+  .hero-content {
+    min-height: 100vh;
+    min-height: 100svh;
   }
 }
 
