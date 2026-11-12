@@ -347,7 +347,7 @@ const AdminDashboard: React.FC = () => {
           <div className="border-b border-gray-200">
             <div className="overflow-x-auto scrollbar-hide">
               <nav className="flex space-x-1 sm:space-x-8 min-w-max px-2 sm:px-0" aria-label="Tabs">
-                {[
+                {([
                   { id: 'site', label: 'Site Settings' },
                   { id: 'hero', label: 'Hero Content' },
                   { id: 'mission', label: 'Mission' },
@@ -355,10 +355,10 @@ const AdminDashboard: React.FC = () => {
                   { id: 'info-cards', label: 'Info Cards' },
                   { id: 'team', label: 'Team' },
                   { id: 'nomore', label: 'No More' },
-                ].map((tab) => (
+                ] as const).map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'border-hopely-pink text-hopely-pink'

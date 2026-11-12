@@ -9,8 +9,8 @@ interface InfoCard {
   order: number;
 }
 
-const InfoCards: React.FC = () => {
-  const [cards, setCards] = useState<InfoCard[]>([
+// Used only when Appwrite has no cards or can't be reached
+const FALLBACK_CARDS: InfoCard[] = [
     {
       title: "Your Donation",
       description: "We are hoping to have people across the world to help us in our mission to make children have a better future.",
@@ -21,33 +21,49 @@ const InfoCards: React.FC = () => {
     {
       title: "Complete Projects",
       description: "We provide updates on completed and ongoing projects, ensuring transparency and impact in our community work.",
-      backgroundImage: "/img/IMG_4178.png",
+      backgroundImage: "/img/IMG_4178.jpg",
       iconImage: "/icons/infocards/project.png",
       order: 2
     },
     {
       title: "Hopekid",
       description: "We also have a sponsorship programme where you can sponsor a child and help them get access to education and basic needs.",
-      backgroundImage: "/img/IMG_4149.png",
+      backgroundImage: "/img/IMG_4149.webp",
       iconImage: "/icons/infocards/baby.png",
       order: 3
     }
-  ]);
+];
+
+const InfoCards: React.FC = () => {
+  // null until Appwrite answers, so the fallback photos aren't downloaded and then thrown away
+  const [cards, setCards] = useState<InfoCard[] | null>(null);
 
   useEffect(() => {
     const fetchCards = async () => {
       try {
         const data = await AppwriteService.getInfoCards();
-        if (data && data.length > 0) {
-          setCards(data.sort((a, b) => a.order - b.order));
-        }
+        setCards(data && data.length > 0 ? data.sort((a, b) => a.order - b.order) : FALLBACK_CARDS);
       } catch (error) {
         console.error('Error fetching info cards:', error);
-        // Keep default cards on error
+        setCards(FALLBACK_CARDS);
       }
     };
     fetchCards();
   }, []);
+
+  if (!cards) {
+    return (
+      <section className="py-8 bg-white" aria-busy="true">
+        <div className="max-w-7xl mx-auto px-4 md:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-80 rounded-xl bg-slate-200 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-8 bg-white">

@@ -15,14 +15,14 @@ const client = new Client()
   .setProject(process.env.VITE_APPWRITE_PROJECT_ID || '');
 
 // Set up authentication with API key
-if (process.env.VITE_APPWRITE_API_KEY) {
-  client.setJWT(process.env.VITE_APPWRITE_API_KEY);
+if (process.env.APPWRITE_API_KEY) {
+  client.setJWT(process.env.APPWRITE_API_KEY);
 }
 
 const DATABASE_ID = process.env.VITE_APPWRITE_DATABASE_ID || '';
 const ENDPOINT = process.env.VITE_APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1';
 const PROJECT_ID = process.env.VITE_APPWRITE_PROJECT_ID || '';
-const API_KEY = process.env.VITE_APPWRITE_API_KEY || '';
+const API_KEY = process.env.APPWRITE_API_KEY || '';
 
 // Collection definitions from your config
 const collections = [
@@ -216,7 +216,7 @@ async function setupCollections() {
 
   if (!PROJECT_ID || !DATABASE_ID || !API_KEY) {
     console.error('❌ Error: Missing environment variables!');
-    console.error('Please ensure VITE_APPWRITE_PROJECT_ID, VITE_APPWRITE_DATABASE_ID, and VITE_APPWRITE_API_KEY are set in your .env file.');
+    console.error('Please ensure VITE_APPWRITE_PROJECT_ID, VITE_APPWRITE_DATABASE_ID, and APPWRITE_API_KEY are set in your .env file.');
     process.exit(1);
   }
 

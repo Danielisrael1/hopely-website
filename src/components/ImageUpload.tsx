@@ -1,5 +1,6 @@
 import React, { useState, useRef, useId } from 'react';
 import { AppwriteService } from '../services/appwrite';
+import { resizeImage } from '../lib/resizeImage';
 
 interface ImageUploadProps {
   currentImage?: string;
@@ -32,9 +33,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image must be less than 5MB');
+    // Phone photos are often 5-15MB; they get shrunk before upload, so accept up to 20MB here
+    if (file.size > 20 * 1024 * 1024) {
+      setError('Image must be less than 20MB');
       return;
     }
 
@@ -49,7 +50,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     reader.readAsDataURL(file);
 
     try {
-      const url = await AppwriteService.uploadImage(file);
+      const resized = await resizeImage(file);
+      if (resized.size > 5 * 1024 * 1024) {
+        setError('Image is still over 5MB after resizing. Please choose a smaller image.');
+        setPreview(null);
+        return;
+      }
+      const url = await AppwriteService.uploadImage(resized);
       console.log('Image uploaded, URL received:', url);
       onImageUploaded(url);
       // Keep showing preview briefly, then it will show the actual image from currentImage
@@ -82,7 +89,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   return (
     <div className={className}>
       <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-      
+
       <div className="space-y-3">
         {/* Image Preview */}
         {displayImage && (
@@ -133,8 +140,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             htmlFor={inputId}
             className={`
               inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors
-              ${uploading 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              ${uploading
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-hopely-pink text-white hover:bg-pink-600'
               }
             `}
@@ -153,7 +160,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               </>
             )}
           </label>
-          
+
           {currentImage && !uploading && (
             <span className="text-xs text-gray-500">or enter URL below</span>
           )}

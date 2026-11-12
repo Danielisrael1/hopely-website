@@ -15,8 +15,8 @@ const client = new Client()
   .setProject(process.env.VITE_APPWRITE_PROJECT_ID || '');
 
 // Set up authentication with API key
-if (process.env.VITE_APPWRITE_API_KEY) {
-  client.setJWT(process.env.VITE_APPWRITE_API_KEY);
+if (process.env.APPWRITE_API_KEY) {
+  client.setJWT(process.env.APPWRITE_API_KEY);
 }
 
 const databases = new Databases(client);

@@ -15,7 +15,7 @@
 
 ### 2️⃣ Add API Key to .env
 ```env
-VITE_APPWRITE_API_KEY=your_api_key_here
+APPWRITE_API_KEY=your_api_key_here
 ```
 
 ### 3️⃣ Run the Scripts

@@ -15,6 +15,17 @@ const storage = new Storage(client);
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID || '';
 const STORAGE_BUCKET_ID = import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID || 'images';
 
+// Appwrite's free plan blocks image transformations: every /preview URL returns
+// 403 "storage_image_transformations_blocked". Serve the original file via /view.
+export function toViewUrl(url: string): string {
+  if (!url || !url.includes('/storage/buckets/') || !/\/preview(\?|$)/.test(url)) return url;
+  const u = new URL(url);
+  u.pathname = u.pathname.replace(/\/preview$/, '/view');
+  const project = u.searchParams.get('project');
+  u.search = project ? `?project=${project}` : '';
+  return u.toString();
+}
+
 // Types for our data
 export interface SiteSettings {
   siteName: string;
@@ -151,7 +162,7 @@ export class AppwriteService {
       console.error('Error fetching mission section:', error);
       return {
         title: 'Our Mission',
-        missionImage: '/mission.jpg',
+        missionImage: '/img/hope.jpg',
         ctaButtonText: 'Join Us',
         ctaButtonUrl: 'https://gofund.me/266a82aa',
       };
@@ -204,7 +215,10 @@ export class AppwriteService {
         DATABASE_ID,
         'info_cards'
       );
-      return response.documents.map(doc => doc as unknown as InfoCard).sort((a, b) => a.order - b.order);
+      return response.documents
+        .map(doc => doc as unknown as InfoCard)
+        .map(c => ({ ...c, backgroundImage: toViewUrl(c.backgroundImage), iconImage: toViewUrl(c.iconImage) }))
+        .sort((a, b) => a.order - b.order);
     } catch (error) {
       console.error('Error fetching info cards:', error);
       return [];
@@ -233,7 +247,10 @@ export class AppwriteService {
         DATABASE_ID,
         'team_members'
       );
-      const members = response.documents.map(doc => doc as unknown as TeamMember).sort((a, b) => a.order - b.order);
+      const members = response.documents
+        .map(doc => doc as unknown as TeamMember)
+        .map(m => ({ ...m, image: toViewUrl(m.image) }))
+        .sort((a, b) => a.order - b.order);
       console.log('Retrieved team members:', members);
       return members;
     } catch (error) {
@@ -567,14 +584,7 @@ export class AppwriteService {
       
       // Get the file preview URL (more reliable for images)
       // Using getFilePreview instead of getFileView for better compatibility
-      const fileUrl = storage.getFilePreview(
-        STORAGE_BUCKET_ID, 
-        response.$id,
-        400, // width
-        400, // height
-        undefined, // gravity
-        100 // quality
-      );
+      const fileUrl = storage.getFileView(STORAGE_BUCKET_ID, response.$id);
       
       // Appwrite SDK v18+ returns the preview URL as a string
       console.log('Uploaded image URL:', fileUrl);
@@ -587,7 +597,7 @@ export class AppwriteService {
 
   // Get file view URL for a file ID
   static getFileViewUrl(fileId: string): string {
-    return storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 400, 400);
+    return storage.getFileView(STORAGE_BUCKET_ID, fileId);
   }
 
   // Delete an image from Appwrite Storage
@@ -604,7 +614,7 @@ export class AppwriteService {
   static getFileIdFromUrl(url: string): string | null {
     try {
       // URL format: https://[endpoint]/v1/storage/buckets/[bucketId]/files/[fileId]/view
-      const match = url.match(/\/files\/([^/]+)\/view/);
+      const match = url.match(/\/files\/([^/]+)\/(?:view|preview)/);
       return match ? match[1] : null;
     } catch {
       return null;

@@ -47,7 +47,7 @@ VITE_APPWRITE_DATABASE_ID=68d152e8000b44e52780
 VITE_APPWRITE_PROJECTS_COLLECTION_ID=projects
 
 # Add this line with your API key
-VITE_APPWRITE_API_KEY=your_api_key_here
+APPWRITE_API_KEY=your_api_key_here
 ```
 
 **Security Note:** After running the setup scripts, you can delete this API key from Appwrite console.
@@ -159,7 +159,7 @@ For security, delete the API key after setup:
 1. Go to **"Settings"** → **"API Keys"**
 2. Find the `CMS Setup Script` key
 3. Click the **trash icon** to delete it
-4. Remove `VITE_APPWRITE_API_KEY` from your `.env` file
+4. Remove `APPWRITE_API_KEY` from your `.env` file
 
 ---
 

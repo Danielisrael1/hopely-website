@@ -205,7 +205,6 @@ const Team: React.FC = () => {
               onTouchEnd={handleTouchEnd}
             >
               {teamMembers.map((member, index) => {
-                console.log(`Team member ${member.name} image URL:`, member.image);
                 return (
                 <div 
                   key={`member-${index}`}
@@ -218,9 +217,10 @@ const Team: React.FC = () => {
                         alt={member.name} 
                         className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover rounded-full shadow-md"
                         onError={(e) => {
-                          console.error('Team member image failed to load:', member.image);
-                          // Fallback to placeholder
-                          (e.target as HTMLImageElement).src = '/img/teams/placeholder.jpg';
+                          const img = e.currentTarget;
+                          if (img.dataset.fallback) return; // fallback failed too: stop, don't loop
+                          img.dataset.fallback = '1';
+                          img.src = '/logo.png';
                         }}
                       />
                      

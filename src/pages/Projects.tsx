@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import Button3D from '../components/Button3D';
 import LoginModal from '../components/LoginModal';
 import ProjectForm from '../components/ProjectForm';
@@ -34,7 +33,7 @@ const Projects: React.FC = () => {
           id: '1',
           title: 'Clean Water Initiative',
           description: 'Providing clean water access to rural communities through borehole drilling and water purification systems.',
-          image: '/img/IMG_4149.png',
+          image: '/img/IMG_4149.webp',
           status: 'ongoing',
           location: 'Kampala, Uganda',
           beneficiaries: 500,
@@ -46,7 +45,7 @@ const Projects: React.FC = () => {
           id: '2',
           title: 'School Feeding Program',
           description: 'Daily nutritious meals for children in primary schools to improve attendance and learning outcomes.',
-          image: '/img/IMG_4178.png',
+          image: '/img/IMG_4178.jpg',
           status: 'completed',
           location: 'Jinja, Uganda',
           beneficiaries: 300,
@@ -133,8 +132,7 @@ const Projects: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      
+      {/* Header and Footer come from App.tsx */}
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-slate-800 to-slate-600 text-white py-20">

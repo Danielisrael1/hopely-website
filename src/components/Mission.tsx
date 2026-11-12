@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { AppwriteService, type MissionSection, type MissionItem } from '../services/appwrite';
 
+const FALLBACK_SECTION: MissionSection = {
+  title: 'Join in our mission',
+  missionImage: '/img/hope.jpg',
+  ctaButtonText: 'Join Us',
+  ctaButtonUrl: 'https://gofund.me/266a82aa',
+};
+
 const Mission: React.FC = () => {
   const [missionSection, setMissionSection] = useState<MissionSection | null>(null);
   const [missionItems, setMissionItems] = useState<MissionItem[]>([]);
@@ -17,6 +24,7 @@ const Mission: React.FC = () => {
         setMissionItems(itemsData);
       } catch (error) {
         console.error('Failed to fetch mission data:', error);
+        setMissionSection(FALLBACK_SECTION);
       }
     };
 
@@ -24,12 +32,7 @@ const Mission: React.FC = () => {
   }, []);
 
   // Use CMS data or fallback
-  const section = missionSection || {
-    title: 'Join in our mission',
-    missionImage: '/mission.jpg',
-    ctaButtonText: 'Join Us',
-    ctaButtonUrl: 'https://gofund.me/266a82aa',
-  };
+  const section = missionSection || FALLBACK_SECTION;
 
   const items = missionItems.length > 0 ? missionItems : [
     { text: 'Donate directly, whether regular or one-off', icon: '🎁', order: 1 },
@@ -51,8 +54,8 @@ const Mission: React.FC = () => {
                     y="0" 
                     width="100%" 
                     height="100%" 
-                    preserveAspectRatio="xMidYMid slice" 
-                    href={section.missionImage} 
+                    preserveAspectRatio="xMidYMid slice"
+                    href={missionSection ? section.missionImage : undefined}
                   />
                 </pattern>
               </defs>

@@ -8,15 +8,15 @@ import 'dotenv/config';
 const ENDPOINT = process.env.VITE_APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1';
 const PROJECT_ID = process.env.VITE_APPWRITE_PROJECT_ID || '68c92076003a23d60576';
 const DATABASE_ID = process.env.VITE_APPWRITE_DATABASE_ID || '68d152e8000b44e52780';
-const API_KEY = process.env.VITE_APPWRITE_API_KEY;
+const API_KEY = process.env.APPWRITE_API_KEY;
 
 if (!API_KEY) {
-  console.error('❌ VITE_APPWRITE_API_KEY is required in your .env file');
+  console.error('❌ APPWRITE_API_KEY is required in your .env file');
   console.log('\nTo get an API key:');
   console.log('1. Go to your Appwrite Console');
   console.log('2. Navigate to Project Settings → API Keys');
   console.log('3. Create a new API key with Database permissions');
-  console.log('4. Add it to your .env file as VITE_APPWRITE_API_KEY=your_key_here');
+  console.log('4. Add it to your .env file as APPWRITE_API_KEY=your_key_here');
   process.exit(1);
 }
 
